@@ -26,6 +26,10 @@ JOBS = [
     ("architecture", "architecture", []),
     ("architecture-nested", "architecture-nested", []),
     ("architecture-nested-dark", "architecture-nested", ["--theme", "dark"]),
+    ("sequence-pipeline", "sequence-pipeline", []),
+    ("sequence-pipeline-dark", "sequence-pipeline", ["--theme", "dark"]),
+    ("sequence-pipeline-animated", "sequence-pipeline", ["--animate", "packets"]),
+    ("sequence-phase-headers", "sequence-phase-headers", []),
 ]
 
 

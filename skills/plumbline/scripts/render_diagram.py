@@ -11,6 +11,8 @@ import argparse
 import html
 import itertools
 import json
+import os
+import sys
 
 MONO = 'ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace'
 SANS = '-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;Noto Sans&quot;, Helvetica, Arial, sans-serif'
@@ -280,6 +282,11 @@ def main():
     args = ap.parse_args()
 
     spec = json.load(open(args.spec))
+    if spec.get("type") == "sequence":
+        # sibling module; the explicit path keeps this working under python -I
+        sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+        from render_sequence import render_sequence
+        return render_sequence(spec, spec.get("options", {}), args.theme, args.animate, args.out)
     opt = {"card_w": 230, "gap": 150, "row_gap": 30, "trunk": 40, "x0": 32, "y0": 100,
            "lane_pad": 16, "show_new": False, "theme": "light", "animate": "none",
            "lines": "merge", "show_lanes": True, "group_pad": 20, "group_head": 30, "flip": False}
@@ -481,7 +488,7 @@ def main():
         f'role="img" aria-label="{esc(title)}" font-family="{SANS}">')
     add(f'<title>{esc(title)}</title>')
     defs = [f'<pattern id="dots" width="18" height="18" patternUnits="userSpaceOnUse"><circle cx="1.5" cy="1.5" r="1" fill="{T["dots"]}"/></pattern>']
-    for st in used_states | {"unchanged"}:
+    for st in sorted(used_states | {"unchanged"}):
         defs.append(f'<marker id="mk-{st}" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" '
                     f'orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="{P[st][0]}"/></marker>')
     add("<defs>" + "".join(defs) + "</defs>")

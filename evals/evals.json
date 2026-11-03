@@ -18,6 +18,12 @@
       "prompt": "Make an architecture diagram (SVG) of a nightly batch pipeline: an operational Postgres database and a partner S3 bucket with CSV files get loaded by Airflow into Snowflake, dbt builds marts there, and Looker reads the marts. Keep it clear enough for a stakeholder slide. Save it as architecture.svg.",
       "expected_output": "A clear left-to-right architecture SVG with all six components, labelled connections, no overlapping boxes or crossing lines.",
       "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Draw a sequence diagram of how our nightly pipeline runs: Airflow triggers an Airbyte sync, Airbyte pulls pages from a CRM API (5 pages) and loads Snowflake raw, then Airflow runs dbt build, which reads raw and writes marts, and finally Airflow refreshes a Looker dashboard. Three phases, numbered calls, as an SVG for a README.",
+      "expected_output": "A sequence SVG with participant columns, lifelines, activation bars, solid calls and dashed returns, three labelled phases, numbered calls, no clipped labels.",
+      "files": []
     }
   ]
 }

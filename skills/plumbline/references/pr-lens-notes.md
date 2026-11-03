@@ -35,6 +35,8 @@ Findings from many renders with `@coldtea/pr-lens-cli` 0.14 (renderer 0.4.1). Th
 
 ## Data flows (sequence diagrams)
 
+- plumbline draws sequence diagrams itself (`"type": "sequence"`, SKILL.md section 3b) with shared participant columns, so the width limits below apply to PR Lens only. Use PR Lens when the flow must carry `payload` samples on a prlens.dev canvas.
+
 - Width grows with the number of participants (9 participants gave about 3300px). Split into phases of 3 to 5 participants, one flow per phase.
 - A request needs an explicit `return` message to show the response arrow; a payload alone does not draw one.
 - Model the true order of steps. Example: in a dbt build each layer is built and then tested before the next layer builds, so tests run after the model they check and before downstream models.

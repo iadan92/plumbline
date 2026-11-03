@@ -3,8 +3,8 @@ name: plumbline
 description: >-
   Draw clean, hand-laid SVG diagrams for data work in a PR Lens look: data lineage (raw to staging
   to marts), pipeline data flow including animated pipeline SVGs, architecture diagrams with
-  nested boxes, and data models (ERDs, true star and snowflake schemas with vertical column lists
-  and PK/FK lines). Use this whenever the user asks to draw, diagram, visualize or map a pipeline,
+  nested boxes, sequence diagrams (who calls whom, in time order), and data models (ERDs, true
+  star and snowflake schemas with vertical column lists and PK/FK lines). Use this whenever the user asks to draw, diagram, visualize or map a pipeline,
   dbt lineage or DAG, warehouse layers, data model, ERD, star or snowflake schema, fact and
   dimension tables, or system architecture, including redoing or fixing an existing diagram,
   adding animation or dark mode, or when PR Lens output is tangled, staggered, crossing or too
@@ -27,7 +27,7 @@ Why a renderer instead of PR Lens or Mermaid: auto-layout engines decide placeme
 |---|---|
 | Lineage, architecture or data model where layout matters; aligned stage columns; vertical column lists in tables; left-to-right flow | This skill's renderer (`scripts/render_diagram.py`) |
 | A diagram for a pull request or a code change, about 8 nodes or fewer, no layout demands | PR Lens (`npx @coldtea/pr-lens-cli@latest ...`); read `references/pr-lens-notes.md` first |
-| A request/response sequence with participants (lifelines) | PR Lens flow, split into phases of at most 5 participants; see notes |
+| A request/response sequence with participants (lifelines), for example "who calls whom" across a nightly run | This skill's renderer with `"type": "sequence"` (section 3b) |
 | Dozens of dbt models, a whole warehouse | Generate from the project instead (`dbt docs generate`, or a tool reading `manifest.json`). Hand-placed diagrams do not scale past roughly 15 nodes per stage |
 | User explicitly wants Mermaid, draw.io or Excalidraw | Use those |
 
@@ -70,6 +70,33 @@ If PR Lens output is messy, do not keep tuning it. Its layout hints (`direction`
 - `options.flip: true` mirrors the lane order left to right. Lane order is the layout: put the fact lane first, last or in the middle (dimension lanes on both sides) and the arrows keep pointing from the FK to the PK. A table in the same lane as the fact gets a short vertical line from the fact's bottom or top edge.
 - Routing is automatic and follows one rule set: a line leaves the right side of the source and enters the left side of the target; if the target lane is to the left, it leaves the left side and enters the right side; within one lane it runs bottom to top vertically. Lines to the same target merge into one vertical trunk just before it, and lines from one source to several targets split from a shared trunk.
 
+## 3b. Sequence diagrams
+
+Set `"type": "sequence"` to draw participants as columns with lifelines and messages in time order. Use it for runtime behaviour (orchestrator calls extractor, extractor calls API, API returns a page); use the lane and row spec above for structure (what feeds what). Coordinates are never given: columns follow participant order, rows follow message order, and activation bars, arrow ends, column widths and label room are computed.
+
+```json
+{
+  "type": "sequence",
+  "title": "Nightly pipeline",
+  "options": {"numbers": true, "headers": "top"},
+  "participants": [{"id": "dagster", "title": "Dagster", "sub": "assets and daily schedule", "glyph": "service"},
+                   {"id": "dlt", "title": "dlt pipeline", "glyph": "module"},
+                   {"id": "api", "title": "Shop REST API", "glyph": "service"}],
+  "phases": [{"id": "extract", "title": "1. Extract and load", "state": "added",
+              "messages": [{"id": "run", "from": "dagster", "to": "dlt", "label": "run extract asset"},
+                           {"id": "page", "from": "dlt", "to": "api", "label": "GET /orders", "reply": "200 OrderPage", "repeat": 5},
+                           {"from": "dlt", "to": "dagster", "kind": "return", "label": "extract succeeded"}]}],
+  "frames": [{"label": "loop: each page", "from": "page", "to": "page:reply"}]
+}
+```
+
+- `participants`: same fields as nodes (`title`, `sub`, `glyph`, `state`). Order is left to right; put the initiator first. Card width adapts to the text. A participant can take part in any number of messages and phases; it keeps one column. Order columns so chatty pairs sit next to each other, because a call across other lifelines is drawn straight over them.
+- `phases`: labelled bands (`title`, `sub`, optional `state` colouring its messages). Omit `phases` and give a flat `messages` list for one band. Keep a phase to about 10 messages, so each stays readable.
+- Message `kind`: `sync` (default, solid arrow, opens an activation bar on the receiver), `return` (dashed, closes the sender's bar), `async` (open arrowhead, short bar), `self` (loop on one participant, set `from` equal to `to`), `note` (`over`: one id or a list, `label`). `reply: "text"` adds the return straight after a call. `repeat: n` appends a multiplication sign and n to the label. `state` colours a message (grey by default; use green, amber, red only for added, changed, removed).
+- `frames`: dashed loop or alt boxes around a message range, by message `id` (a reply is `<id>:reply`).
+- `options.headers`: `top` (default) draws participant cards once with continuous lifelines; `phase` repeats the cards inside every band for the participants that band uses, which is the PR Lens look and suits long diagrams. `options.numbers: true` numbers calls (not returns). `options.gap` sets the minimum distance between columns; it widens by itself when a label needs room.
+- Theme and `--animate packets` work as elsewhere: packets play message by message in order.
+
 ## 4. Layout rules that keep diagrams readable
 
 These come from iterating on real lineage and star-schema diagrams until the user accepted them.
@@ -83,6 +110,8 @@ These come from iterating on real lineage and star-schema diagrams until the use
 - **Data models:** facts and aggregates are fact tables that reuse the same dimensions. Draw FK lines from each fact's FK column to the dimension's PK row, with `"lines": "lanes"` so no two lines share a vertical. For a true star, put the fact lane in the middle with dimension lanes on both sides (`assets/examples/star-center.json`, or the automatic `layout: star`), or put one dimension in the fact's lane below it. Put each fact table in its own lane next to the dimensions, so every FK line stays in one gap. See `references/modeling-notes.md` for what reviewers expect.
 - **Containers:** use `groups` when the user describes wrapping ("Airflow around the pipeline"). A container is a box, not a node; edges still go between the nodes inside.
 - **Show derivation separately from keys.** FK lines belong in the model diagram; "built from" arrows (fact to aggregate, staging to mart) belong in the lineage diagram. Two diagrams are clearer than one that mixes both.
+
+- **Sequence diagrams:** keep labels to a few words, name messages by what is sent (`GET /orders`) and returns by what comes back (`200 OrderPage`), and split a long run into phases instead of 25 messages in one band.
 
 ## 5. Limits to state honestly
 

@@ -2,7 +2,7 @@
 
 Straight lines for crooked data pipelines.
 
-An agent skill that draws clean, hand-laid SVG diagrams for data work: lineage, pipeline data flow, architecture, and data models (ERDs, star and snowflake schemas). Output follows the look of PR Lens: dotted background, soft lanes, white cards with icon chips, state colours, optional dark theme and animation.
+An agent skill that draws clean, hand-laid SVG diagrams for data work: lineage, pipeline data flow, sequence diagrams, architecture, and data models (ERDs, star and snowflake schemas). Output follows the look of PR Lens: dotted background, soft lanes, white cards with icon chips, state colours, optional dark theme and animation.
 
 It works with any coding agent that supports the open [agent skills](https://skills.sh) format (Claude Code, Codex, Cursor, Copilot, Gemini CLI and others). The skill carries its own renderer, a single Python file with no dependencies.
 
@@ -28,8 +28,10 @@ This skill lets the agent place each node explicitly, then routes every line for
 | ![Star schema lanes](examples/star-schema-lanes.svg) | ![Star centre](examples/star-center.svg) |
 | **Nested architecture** (box in box in box) | **Architecture, flat** |
 | ![Nested architecture](examples/architecture-nested.svg) | ![Architecture](examples/architecture.svg) |
-| **Lineage by stage, dark** | |
-| ![Lineage dark](examples/lineage-by-stage-dark.svg) | |
+| **Lineage by stage, dark** | **Sequence diagram** (who calls whom, three phases) |
+| ![Lineage dark](examples/lineage-by-stage-dark.svg) | ![Sequence](examples/sequence-pipeline.svg) |
+| **Sequence, dark** | **Sequence, headers per phase** (PR Lens style) |
+| ![Sequence dark](examples/sequence-pipeline-dark.svg) | ![Sequence phase headers](examples/sequence-phase-headers.svg) |
 
 The specs behind these images are in [`skills/plumbline/assets/examples/`](skills/plumbline/assets/examples/).
 
@@ -91,6 +93,7 @@ python3 skills/plumbline/scripts/render_diagram.py spec.json out.svg \
 | `nodes[].columns` | Turns a card into a table: `[{"name", "type", "key"}]` with `key` of `PK`, `FK`, `PK,FK` or null. Edges can attach to a column with `from_col` and `to_col`. |
 | `edges` | `from`, `to`, short `label`, optional `style: "dotted"`, `state`, `step` (animation order). |
 | `groups` | Nested boxes around nodes or other groups, any depth. Use for containers such as an orchestrator around a pipeline. |
+| `type: "sequence"` | Sequence diagram: `participants`, `phases` of `messages` (`sync`, `return`, `async`, `self`, `note`), `frames`. No coordinates; see the sequence section in [`SKILL.md`](skills/plumbline/SKILL.md). |
 | `layout: "star"` | Automatic star or snowflake layout. Give only tables and FK edges. |
 | `options.lines` | `merge` (shared trunk per target, good for lineage) or `lanes` (own vertical lane per line, needed for ERDs). |
 | `options.flip` | Mirrors the lane order. |
