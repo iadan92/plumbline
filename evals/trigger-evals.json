@@ -1,0 +1,82 @@
+[
+ {
+  "query": "I'm putting together a wiki page for the analytics team about our dbt project. I need a lineage picture: raw_orders and raw_customers feed stg_orders and stg_customers, those build fct_orders and dim_customers, and there's an agg_daily_revenue off fct_orders. Each layer should be its own column left to right, the orders chain on the top row, and the lines shouldn't cross over the boxes. Output an svg",
+  "should_trigger": true
+ },
+ {
+  "query": "our pr lens render of the warehouse is a mess - the stages are staggered diagonally, nodes wrap two per row and lines loop around the top. I need the same look (green lines, dotted bg, cards) but with raw/staging/marts aligned in columns where I control placement. can you rebuild it as svg",
+  "should_trigger": true
+ },
+ {
+  "query": "draw an ERD for our subscription billing schema as an svg: customers, plans, subscriptions, invoices, payments. every table box lists its columns one per line with PK/FK chips, and the FK lines have to run from the FK column row to the PK row, each line in its own vertical lane so I can tell which goes where",
+  "should_trigger": true
+ },
+ {
+  "query": "make a true star schema diagram: fact_sales in the middle inside one box, dim_date, dim_store, dim_customer, dim_product around it, and dim_product is snowflaked into dim_category. columns listed in each table, pk/fk marked, light and dark versions as svg for the docs site",
+  "should_trigger": true
+ },
+ {
+  "query": "I need an architecture diagram for a stakeholder deck: Airflow as an outer box wrapping the whole nightly pipeline (Postgres + partner S3 sources, Snowflake with raw and marts schemas inside it, dbt), with Looker as a separate serving box next to it. clean boxes inside boxes, svg, dark mode too",
+  "should_trigger": true
+ },
+ {
+  "query": "can you make an animated svg of our ingestion pipeline for the README - kafka topic to spark job to delta tables to trino, with a dot travelling along each connection stage by stage, same style as the PR Lens flow animations",
+  "should_trigger": true
+ },
+ {
+  "query": "I have a data flow I need drawn left to right: CRM export -> landing bucket -> staging schema -> reporting mart -> dashboard. put each stage in its own column with short labels on the arrows, keep the generated date table standalone (it has no source), svg please",
+  "should_trigger": true
+ },
+ {
+  "query": "redo this lineage diagram: the aggregate tables should sit in their own column, fact table joins from the dimensions should merge into one line before the fact, and everything should read left to right. i want to be able to flip the layout so the fact is on the left or the right later",
+  "should_trigger": true
+ },
+ {
+  "query": "we're documenting the data model for a retail mart for new joiners. draw the facts and dimensions with columns inside the tables, fact_sales in the left lane and fact_daily_revenue in the right lane with the shared dimensions between them, arrowheads pointing at the PK rows",
+  "should_trigger": true
+ },
+ {
+  "query": "I want a diagram of the layers in our warehouse (raw, staging, intermediate, marts) with the tables in each layer listed vertically, lines running straight left to right, in the PR Lens colours, so I can paste it into confluence",
+  "should_trigger": true
+ },
+ {
+  "query": "write the dbt model sql for fct_orders that joins stg_orders to stg_customers and adds a surrogate key and an incremental filter on updated_at",
+  "should_trigger": false
+ },
+ {
+  "query": "my dbt test unique_fct_orders_order_id is failing with 3 duplicate rows after the last backfill. here's the compiled query and the output, help me find the cause",
+  "should_trigger": false
+ },
+ {
+  "query": "review this pull request that changes our ingestion DAG and tell me if there are correctness bugs, I'll paste the diff below",
+  "should_trigger": false
+ },
+ {
+  "query": "write mermaid flowchart syntax for our CI/CD pipeline, github actions to staging to prod, it gets pasted into a GitHub README so it must be mermaid not svg",
+  "should_trigger": false
+ },
+ {
+  "query": "create a uml class diagram in plantuml for these python classes: Order, OrderItem, Customer, with inheritance from a BaseModel",
+  "should_trigger": false
+ },
+ {
+  "query": "build a bar chart in matplotlib of monthly revenue by region from this csv and save it as a png with a clean theme",
+  "should_trigger": false
+ },
+ {
+  "query": "explain the difference between a star schema and a snowflake schema and when you'd pick each, a short written answer is enough, no diagram",
+  "should_trigger": false
+ },
+ {
+  "query": "design the table structure and write the CREATE TABLE statements for a subscription billing system in postgres, with indexes and foreign keys",
+  "should_trigger": false
+ },
+ {
+  "query": "set up a Dagster project that runs dbt build on a schedule and write the asset definitions in python",
+  "should_trigger": false
+ },
+ {
+  "query": "make a powerpoint deck of 6 slides summarizing our Q3 data platform migration for the steering committee, with speaker notes",
+  "should_trigger": false
+ }
+]

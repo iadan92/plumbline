@@ -1,0 +1,23 @@
+{
+  "skill_name": "plumbline",
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "Draw the lineage of a small dbt project as an SVG I can put in a README. Sources: orders, customers and payments, loaded raw. One staging view per source. Marts: dim_customers and fct_payments, plus an aggregate agg_daily_revenue built from fct_payments. I want it to read left to right, with raw, staging, marts and aggregate as columns, and it should be animated. Save it as lineage.svg.",
+      "expected_output": "A left-to-right lineage SVG with four stage columns, every table listed vertically in its column, straight or merged lines, animated, no crossing cards.",
+      "files": []
+    },
+    {
+      "id": 1,
+      "prompt": "Create an ERD as SVG for a retail star schema: fct_sales (sale_id, store_key, date_key, product_key, quantity, net_amount) with dim_store, dim_date and dim_product. List the columns inside each table box, one per line, mark primary and foreign keys, and draw the FK lines from the fact to the dimensions. I need a light and a dark version. Save erd-light.svg and erd-dark.svg.",
+      "expected_output": "Two ERD SVGs, table boxes with vertical column lists and PK/FK markers, FK lines from fact to each dimension without loops, dark version genuinely dark.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Make an architecture diagram (SVG) of a nightly batch pipeline: an operational Postgres database and a partner S3 bucket with CSV files get loaded by Airflow into Snowflake, dbt builds marts there, and Looker reads the marts. Keep it clear enough for a stakeholder slide. Save it as architecture.svg.",
+      "expected_output": "A clear left-to-right architecture SVG with all six components, labelled connections, no overlapping boxes or crossing lines.",
+      "files": []
+    }
+  ]
+}

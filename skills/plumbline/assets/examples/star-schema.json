@@ -1,0 +1,260 @@
+{
+ "title": "Sales star schema",
+ "options": {
+  "gap": 130,
+  "lines": "lanes"
+ },
+ "lanes": [
+  {
+   "id": "facts",
+   "label": "facts"
+  },
+  {
+   "id": "dims",
+   "label": "dimensions"
+  },
+  {
+   "id": "aggs",
+   "label": "aggregates",
+   "sub": "derived, daily"
+  }
+ ],
+ "nodes": [
+  {
+   "id": "fct",
+   "title": "fct_order_items",
+   "lane": "facts",
+   "row": 0,
+   "state": "unchanged",
+   "glyph": "table",
+   "columns": [
+    {
+     "name": "order_id",
+     "type": "varchar",
+     "key": "PK"
+    },
+    {
+     "name": "line_number",
+     "type": "integer",
+     "key": "PK"
+    },
+    {
+     "name": "customer_id",
+     "type": "varchar",
+     "key": "FK"
+    },
+    {
+     "name": "date_key",
+     "type": "integer",
+     "key": "FK"
+    },
+    {
+     "name": "product_id",
+     "type": "varchar",
+     "key": "FK"
+    },
+    {
+     "name": "quantity",
+     "type": "integer",
+     "key": null
+    },
+    {
+     "name": "amount",
+     "type": "numeric(12,2)",
+     "key": null
+    }
+   ]
+  },
+  {
+   "id": "dc",
+   "title": "dim_customers",
+   "lane": "dims",
+   "row": 0,
+   "state": "unchanged",
+   "glyph": "table",
+   "columns": [
+    {
+     "name": "customer_id",
+     "type": "varchar",
+     "key": "PK"
+    },
+    {
+     "name": "email",
+     "type": "varchar",
+     "key": null
+    },
+    {
+     "name": "signup_date",
+     "type": "date",
+     "key": null
+    }
+   ]
+  },
+  {
+   "id": "dd",
+   "title": "dim_dates",
+   "lane": "dims",
+   "row": 1,
+   "state": "unchanged",
+   "glyph": "table",
+   "columns": [
+    {
+     "name": "date_key",
+     "type": "integer",
+     "key": "PK"
+    },
+    {
+     "name": "date_day",
+     "type": "date",
+     "key": null
+    },
+    {
+     "name": "month",
+     "type": "varchar",
+     "key": null
+    },
+    {
+     "name": "year",
+     "type": "integer",
+     "key": null
+    }
+   ]
+  },
+  {
+   "id": "dp",
+   "title": "dim_products",
+   "lane": "dims",
+   "row": 2,
+   "state": "unchanged",
+   "glyph": "table",
+   "columns": [
+    {
+     "name": "product_id",
+     "type": "varchar",
+     "key": "PK"
+    },
+    {
+     "name": "name",
+     "type": "varchar",
+     "key": null
+    },
+    {
+     "name": "category",
+     "type": "varchar",
+     "key": null
+    }
+   ]
+  },
+  {
+   "id": "ac",
+   "title": "agg_customer_totals",
+   "lane": "aggs",
+   "row": 0,
+   "state": "unchanged",
+   "glyph": "table",
+   "columns": [
+    {
+     "name": "customer_id",
+     "type": "varchar",
+     "key": "PK,FK"
+    },
+    {
+     "name": "date_key",
+     "type": "integer",
+     "key": "PK,FK"
+    },
+    {
+     "name": "order_count",
+     "type": "bigint",
+     "key": null
+    },
+    {
+     "name": "total_amount",
+     "type": "numeric(12,2)",
+     "key": null
+    }
+   ]
+  },
+  {
+   "id": "ap",
+   "title": "agg_product_sales",
+   "lane": "aggs",
+   "row": 2,
+   "state": "unchanged",
+   "glyph": "table",
+   "columns": [
+    {
+     "name": "product_id",
+     "type": "varchar",
+     "key": "PK,FK"
+    },
+    {
+     "name": "date_key",
+     "type": "integer",
+     "key": "PK,FK"
+    },
+    {
+     "name": "units_sold",
+     "type": "bigint",
+     "key": null
+    },
+    {
+     "name": "total_amount",
+     "type": "numeric(12,2)",
+     "key": null
+    }
+   ]
+  }
+ ],
+ "edges": [
+  {
+   "from": "fct",
+   "to": "dc",
+   "label": "FK",
+   "from_col": "customer_id",
+   "to_col": "customer_id"
+  },
+  {
+   "from": "fct",
+   "to": "dd",
+   "label": "FK",
+   "from_col": "date_key",
+   "to_col": "date_key"
+  },
+  {
+   "from": "fct",
+   "to": "dp",
+   "label": "FK",
+   "from_col": "product_id",
+   "to_col": "product_id"
+  },
+  {
+   "from": "ac",
+   "to": "dc",
+   "label": "FK",
+   "from_col": "customer_id",
+   "to_col": "customer_id"
+  },
+  {
+   "from": "ac",
+   "to": "dd",
+   "label": "FK",
+   "from_col": "date_key",
+   "to_col": "date_key"
+  },
+  {
+   "from": "ap",
+   "to": "dp",
+   "label": "FK",
+   "from_col": "product_id",
+   "to_col": "product_id"
+  },
+  {
+   "from": "ap",
+   "to": "dd",
+   "label": "FK",
+   "from_col": "date_key",
+   "to_col": "date_key"
+  }
+ ]
+}

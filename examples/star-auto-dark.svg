@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1764 428" width="1764" height="428" role="img" aria-label="Retail snowflake schema" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;Noto Sans&quot;, Helvetica, Arial, sans-serif">
+<title>Retail snowflake schema</title>
+<defs><pattern id="dots" width="18" height="18" patternUnits="userSpaceOnUse"><circle cx="1.5" cy="1.5" r="1" fill="rgba(110,118,129,.18)"/></pattern><marker id="mk-unchanged" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6e7681"/></marker></defs>
+<rect width="1764" height="428" rx="12" fill="#0d1117"/><rect width="1764" height="428" rx="12" fill="url(#dots)"/>
+<g transform="translate(0,6)">
+<g><rect x="22.0" y="8.0" width="1722.0" height="384.0" rx="14" fill="rgba(255,255,255,.03)" stroke="#3d444d" stroke-width="1" stroke-dasharray="none"/><text x="38.0" y="29.0" font-size="11" font-weight="700" fill="#9198a1">Retail sales mart</text></g>
+<path d="M998.0,206.0 L1042.0,206.0 Q1050.0,206.0 1050.0,198.0 L1050.0,151.0 Q1050.0,143.0 1058.0,143.0 L1128.0,143.0" marker-end="url(#mk-unchanged)" fill="none" stroke="#6e7681" stroke-width="1.5"></path>
+<path d="M768.0,226.0 L724.0,226.0 Q716.0,226.0 716.0,218.0 L716.0,151.0 Q716.0,143.0 708.0,143.0 L638.0,143.0" marker-end="url(#mk-unchanged)" fill="none" stroke="#6e7681" stroke-width="1.5"></path>
+<path d="M998.0,246.0 L1068.0,246.0 Q1076.0,246.0 1076.0,254.0 L1076.0,301.0 Q1076.0,309.0 1084.0,309.0 L1128.0,309.0" marker-end="url(#mk-unchanged)" fill="none" stroke="#6e7681" stroke-width="1.5"></path>
+<path d="M768.0,266.0 L698.0,266.0 Q690.0,266.0 690.0,274.0 L690.0,301.0 Q690.0,309.0 682.0,309.0 L638.0,309.0" marker-end="url(#mk-unchanged)" fill="none" stroke="#6e7681" stroke-width="1.5"></path>
+<path d="M1358.0,183.0 L1415.0,183.0 Q1423.0,183.0 1423.0,175.0 L1423.0,151.0 Q1423.0,143.0 1431.0,143.0 L1488.0,143.0" marker-end="url(#mk-unchanged)" fill="none" stroke="#6e7681" stroke-width="1.5"></path>
+<path d="M408.0,349.0 L351.0,349.0 Q343.0,349.0 343.0,341.0 L343.0,317.0 Q343.0,309.0 335.0,309.0 L278.0,309.0" marker-end="url(#mk-unchanged)" fill="none" stroke="#6e7681" stroke-width="1.5"></path>
+<g filter="drop-shadow(0 1px 2px rgba(0,0,0,.28))"><rect x="768.0" y="107.0" width="230" height="216" rx="10" fill="#1c2128" stroke="#3d444d" stroke-opacity="1" stroke-width="1"/>
+<rect x="782.0" y="125.0" width="26" height="26" rx="7" fill="rgba(110,118,129,.22)"/><rect stroke="#9198a1" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round" x="788.5" y="132.0" width="13" height="12" rx="2"/><path stroke="#9198a1" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round" d="M788.5,136.5 h13 M794.0,136.5 v7.5"/>
+<text x="818.0" y="134.0" font-size="11.5" font-weight="600" fill="#e6edf3">fct_sales</text>
+<text x="818.0" y="152.0" font-size="9.5" fill="#9198a1" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">7 columns</text>
+<path d="M768.0,169.0 H998.0" stroke="#30363d" stroke-width="1"/>
+<rect x="782.0" y="178.5" width="23.2" height="15" rx="7.5" fill="rgba(110,118,129,.22)"/><text x="793.6" y="189.0" text-anchor="middle" font-size="8" font-weight="700" fill="#9198a1">PK</text>
+<text x="813.2" y="189.5" font-size="10.5" fill="#3fb950" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">sale_id</text>
+<text x="984.0" y="189.5" text-anchor="end" font-size="9.5" fill="#9198a1" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">varchar</text>
+<rect x="782.0" y="198.5" width="23.2" height="15" rx="7.5" fill="rgba(110,118,129,.22)"/><text x="793.6" y="209.0" text-anchor="middle" font-size="8" font-weight="700" fill="#9198a1">FK</text>
+<text x="813.2" y="209.5" font-size="10.5" fill="#3fb950" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">store_key</text>
+<text x="984.0" y="209.5" text-anchor="end" font-size="9.5" fill="#9198a1" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">integer</text>
+<rect x="782.0" y="218.5" width="23.2" height="15" rx="7.5" fill="rgba(110,118,129,.22)"/><text x="793.6" y="229.0" text-anchor="middle" font-size="8" font-weight="700" fill="#9198a1">FK</text>
+<text x="813.2" y="229.5" font-size="10.5" fill="#3fb950" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">customer_key</text>
+<text x="984.0" y="229.5" text-anchor="end" font-size="9.5" fill="#9198a1" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">integer</text>
+<rect x="782.0" y="238.5" width="23.2" height="15" rx="7.5" fill="rgba(110,118,129,.22)"/><text x="793.6" y="249.0" text-anchor="middle" font-size="8" font-weight="700" fill="#9198a1">FK</text>
+<text x="813.2" y="249.5" font-size="10.5" fill="#3fb950" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">date_key</text>
+<text x="984.0" y="249.5" text-anchor="end" font-size="9.5" fill="#9198a1" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">integer</text>
+<rect x="782.0" y="258.5" width="23.2" height="15" rx="7.5" fill="rgba(110,118,129,.22)"/><text x="793.6" y="269.0" text-anchor="middle" font-size="8" font-weight="700" fill="#9198a1">FK</text>
+<text x="813.2" y="269.5" font-size="10.5" fill="#3fb950" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">product_key</text>
+<text x="984.0" y="269.5" text-anchor="end" font-size="9.5" fill="#9198a1" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">integer</text>
+<text x="813.2" y="289.5" font-size="10.5" fill="#3fb950" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">quantity</text>
+<text x="984.0" y="289.5" text-anchor="end" font-size="9.5" fill="#9198a1" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">integer</text>
+<text x="813.2" y="309.5" font-size="10.5" fill="#3fb950" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">net_amount</text>
+<text x="984.0" y="309.5" text-anchor="end" font-size="9.5" fill="#9198a1" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">numeric(12,2)</text>
+</g>
+<g filter="drop-shadow(0 1px 2px rgba(0,0,0,.28))"><rect x="1128.0" y="64.0" width="230" height="136" rx="10" fill="#1c2128" stroke="#3d444d" stroke-opacity="1" stroke-width="1"/>
+<rect x="1142.0" y="82.0" width="26" height="26" rx="7" fill="rgba(110,118,129,.22)"/><rect stroke="#9198a1" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round" x="1148.5" y="89.0" width="13" height="12" rx="2"/><path stroke="#9198a1" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round" d="M1148.5,93.5 h13 M1154.0,93.5 v7.5"/>
+<text x="1178.0" y="91.0" font-size="11.5" font-weight="600" fill="#e6edf3">dim_store</text>
+<text x="1178.0" y="109.0" font-size="9.5" fill="#9198a1" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">3 columns</text>
+<path d="M1128.0,126.0 H1358.0" stroke="#30363d" stroke-width="1"/>
+<rect x="1142.0" y="135.5" width="23.2" height="15" rx="7.5" fill="rgba(110,118,129,.22)"/><text x="1153.6" y="146.0" text-anchor="middle" font-size="8" font-weight="700" fill="#9198a1">PK</text>
+<text x="1173.2" y="146.5" font-size="10.5" fill="#3fb950" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">store_key</text>
+<text x="1344.0" y="146.5" text-anchor="end" font-size="9.5" fill="#9198a1" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">integer</text>
+<text x="1173.2" y="166.5" font-size="10.5" fill="#3fb950" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">store_name</text>
+<text x="1344.0" y="166.5" text-anchor="end" font-size="9.5" fill="#9198a1" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">varchar</text>
+<rect x="1142.0" y="175.5" width="23.2" height="15" rx="7.5" fill="rgba(110,118,129,.22)"/><text x="1153.6" y="186.0" text-anchor="middle" font-size="8" font-weight="700" fill="#9198a1">FK</text>
+<text x="1173.2" y="186.5" font-size="10.5" fill="#3fb950" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">region_key</text>
+<text x="1344.0" y="186.5" text-anchor="end" font-size="9.5" fill="#9198a1" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">integer</text>
+</g>
+<g filter="drop-shadow(0 1px 2px rgba(0,0,0,.28))"><rect x="1488.0" y="64.0" width="230" height="116" rx="10" fill="#1c2128" stroke="#3d444d" stroke-opacity="1" stroke-width="1"/>
+<rect x="1502.0" y="82.0" width="26" height="26" rx="7" fill="rgba(110,118,129,.22)"/><rect stroke="#9198a1" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round" x="1508.5" y="89.0" width="13" height="12" rx="2"/><path stroke="#9198a1" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round" d="M1508.5,93.5 h13 M1514.0,93.5 v7.5"/>
+<text x="1538.0" y="91.0" font-size="11.5" font-weight="600" fill="#e6edf3">dim_region</text>
+<text x="1538.0" y="109.0" font-size="9.5" fill="#9198a1" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">2 columns</text>
+<path d="M1488.0,126.0 H1718.0" stroke="#30363d" stroke-width="1"/>
+<rect x="1502.0" y="135.5" width="23.2" height="15" rx="7.5" fill="rgba(110,118,129,.22)"/><text x="1513.6" y="146.0" text-anchor="middle" font-size="8" font-weight="700" fill="#9198a1">PK</text>
+<text x="1533.2" y="146.5" font-size="10.5" fill="#3fb950" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">region_key</text>
+<text x="1704.0" y="146.5" text-anchor="end" font-size="9.5" fill="#9198a1" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">integer</text>
+<text x="1533.2" y="166.5" font-size="10.5" fill="#3fb950" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">region_name</text>
+<text x="1704.0" y="166.5" text-anchor="end" font-size="9.5" fill="#9198a1" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">varchar</text>
+</g>
+<g filter="drop-shadow(0 1px 2px rgba(0,0,0,.28))"><rect x="408.0" y="64.0" width="230" height="136" rx="10" fill="#1c2128" stroke="#3d444d" stroke-opacity="1" stroke-width="1"/>
+<rect x="422.0" y="82.0" width="26" height="26" rx="7" fill="rgba(110,118,129,.22)"/><rect stroke="#9198a1" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round" x="428.5" y="89.0" width="13" height="12" rx="2"/><path stroke="#9198a1" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round" d="M428.5,93.5 h13 M434.0,93.5 v7.5"/>
+<text x="458.0" y="91.0" font-size="11.5" font-weight="600" fill="#e6edf3">dim_customer</text>
+<text x="458.0" y="109.0" font-size="9.5" fill="#9198a1" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">3 columns</text>
+<path d="M408.0,126.0 H638.0" stroke="#30363d" stroke-width="1"/>
+<rect x="422.0" y="135.5" width="23.2" height="15" rx="7.5" fill="rgba(110,118,129,.22)"/><text x="433.6" y="146.0" text-anchor="middle" font-size="8" font-weight="700" fill="#9198a1">PK</text>
+<text x="453.2" y="146.5" font-size="10.5" fill="#3fb950" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">customer_key</text>
+<text x="624.0" y="146.5" text-anchor="end" font-size="9.5" fill="#9198a1" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">integer</text>
+<text x="453.2" y="166.5" font-size="10.5" fill="#3fb950" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">email</text>
+<text x="624.0" y="166.5" text-anchor="end" font-size="9.5" fill="#9198a1" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">varchar</text>
+<text x="453.2" y="186.5" font-size="10.5" fill="#3fb950" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">segment</text>
+<text x="624.0" y="186.5" text-anchor="end" font-size="9.5" fill="#9198a1" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">varchar</text>
+</g>
+<g filter="drop-shadow(0 1px 2px rgba(0,0,0,.28))"><rect x="1128.0" y="230.0" width="230" height="136" rx="10" fill="#1c2128" stroke="#3d444d" stroke-opacity="1" stroke-width="1"/>
+<rect x="1142.0" y="248.0" width="26" height="26" rx="7" fill="rgba(110,118,129,.22)"/><rect stroke="#9198a1" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round" x="1148.5" y="255.0" width="13" height="12" rx="2"/><path stroke="#9198a1" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round" d="M1148.5,259.5 h13 M1154.0,259.5 v7.5"/>
+<text x="1178.0" y="257.0" font-size="11.5" font-weight="600" fill="#e6edf3">dim_date</text>
+<text x="1178.0" y="275.0" font-size="9.5" fill="#9198a1" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">3 columns</text>
+<path d="M1128.0,292.0 H1358.0" stroke="#30363d" stroke-width="1"/>
+<rect x="1142.0" y="301.5" width="23.2" height="15" rx="7.5" fill="rgba(110,118,129,.22)"/><text x="1153.6" y="312.0" text-anchor="middle" font-size="8" font-weight="700" fill="#9198a1">PK</text>
+<text x="1173.2" y="312.5" font-size="10.5" fill="#3fb950" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">date_key</text>
+<text x="1344.0" y="312.5" text-anchor="end" font-size="9.5" fill="#9198a1" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">integer</text>
+<text x="1173.2" y="332.5" font-size="10.5" fill="#3fb950" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">date_day</text>
+<text x="1344.0" y="332.5" text-anchor="end" font-size="9.5" fill="#9198a1" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">date</text>
+<text x="1173.2" y="352.5" font-size="10.5" fill="#3fb950" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">month</text>
+<text x="1344.0" y="352.5" text-anchor="end" font-size="9.5" fill="#9198a1" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">varchar</text>
+</g>
+<g filter="drop-shadow(0 1px 2px rgba(0,0,0,.28))"><rect x="408.0" y="230.0" width="230" height="136" rx="10" fill="#1c2128" stroke="#3d444d" stroke-opacity="1" stroke-width="1"/>
+<rect x="422.0" y="248.0" width="26" height="26" rx="7" fill="rgba(110,118,129,.22)"/><rect stroke="#9198a1" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round" x="428.5" y="255.0" width="13" height="12" rx="2"/><path stroke="#9198a1" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round" d="M428.5,259.5 h13 M434.0,259.5 v7.5"/>
+<text x="458.0" y="257.0" font-size="11.5" font-weight="600" fill="#e6edf3">dim_product</text>
+<text x="458.0" y="275.0" font-size="9.5" fill="#9198a1" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">3 columns</text>
+<path d="M408.0,292.0 H638.0" stroke="#30363d" stroke-width="1"/>
+<rect x="422.0" y="301.5" width="23.2" height="15" rx="7.5" fill="rgba(110,118,129,.22)"/><text x="433.6" y="312.0" text-anchor="middle" font-size="8" font-weight="700" fill="#9198a1">PK</text>
+<text x="453.2" y="312.5" font-size="10.5" fill="#3fb950" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">product_key</text>
+<text x="624.0" y="312.5" text-anchor="end" font-size="9.5" fill="#9198a1" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">integer</text>
+<text x="453.2" y="332.5" font-size="10.5" fill="#3fb950" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">name</text>
+<text x="624.0" y="332.5" text-anchor="end" font-size="9.5" fill="#9198a1" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">varchar</text>
+<rect x="422.0" y="341.5" width="23.2" height="15" rx="7.5" fill="rgba(110,118,129,.22)"/><text x="433.6" y="352.0" text-anchor="middle" font-size="8" font-weight="700" fill="#9198a1">FK</text>
+<text x="453.2" y="352.5" font-size="10.5" fill="#3fb950" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">category_key</text>
+<text x="624.0" y="352.5" text-anchor="end" font-size="9.5" fill="#9198a1" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">integer</text>
+</g>
+<g filter="drop-shadow(0 1px 2px rgba(0,0,0,.28))"><rect x="48.0" y="230.0" width="230" height="116" rx="10" fill="#1c2128" stroke="#3d444d" stroke-opacity="1" stroke-width="1"/>
+<rect x="62.0" y="248.0" width="26" height="26" rx="7" fill="rgba(110,118,129,.22)"/><rect stroke="#9198a1" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round" x="68.5" y="255.0" width="13" height="12" rx="2"/><path stroke="#9198a1" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round" d="M68.5,259.5 h13 M74.0,259.5 v7.5"/>
+<text x="98.0" y="257.0" font-size="11.5" font-weight="600" fill="#e6edf3">dim_category</text>
+<text x="98.0" y="275.0" font-size="9.5" fill="#9198a1" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">2 columns</text>
+<path d="M48.0,292.0 H278.0" stroke="#30363d" stroke-width="1"/>
+<rect x="62.0" y="301.5" width="23.2" height="15" rx="7.5" fill="rgba(110,118,129,.22)"/><text x="73.6" y="312.0" text-anchor="middle" font-size="8" font-weight="700" fill="#9198a1">PK</text>
+<text x="93.2" y="312.5" font-size="10.5" fill="#3fb950" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">category_key</text>
+<text x="264.0" y="312.5" text-anchor="end" font-size="9.5" fill="#9198a1" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">integer</text>
+<text x="93.2" y="332.5" font-size="10.5" fill="#3fb950" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">category_name</text>
+<text x="264.0" y="332.5" text-anchor="end" font-size="9.5" fill="#9198a1" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">varchar</text>
+</g>
+<g><rect x="1010.1" y="197.5" width="27.8" height="17" rx="8.5" fill="#1c2128" stroke="#3d444d"/><text x="1024.0" y="209.2" text-anchor="middle" font-size="9" font-weight="600" fill="#9198a1">FK</text></g>
+<g><rect x="728.1" y="217.5" width="27.8" height="17" rx="8.5" fill="#1c2128" stroke="#3d444d"/><text x="742.0" y="229.2" text-anchor="middle" font-size="9" font-weight="600" fill="#9198a1">FK</text></g>
+<g><rect x="1023.1" y="237.5" width="27.8" height="17" rx="8.5" fill="#1c2128" stroke="#3d444d"/><text x="1037.0" y="249.2" text-anchor="middle" font-size="9" font-weight="600" fill="#9198a1">FK</text></g>
+<g><rect x="715.1" y="257.5" width="27.8" height="17" rx="8.5" fill="#1c2128" stroke="#3d444d"/><text x="729.0" y="269.2" text-anchor="middle" font-size="9" font-weight="600" fill="#9198a1">FK</text></g>
+<g><rect x="1376.6" y="174.5" width="27.8" height="17" rx="8.5" fill="#1c2128" stroke="#3d444d"/><text x="1390.5" y="186.2" text-anchor="middle" font-size="9" font-weight="600" fill="#9198a1">FK</text></g>
+<g><rect x="361.6" y="340.5" width="27.8" height="17" rx="8.5" fill="#1c2128" stroke="#3d444d"/><text x="375.5" y="352.2" text-anchor="middle" font-size="9" font-weight="600" fill="#9198a1">FK</text></g>
+</g></svg>

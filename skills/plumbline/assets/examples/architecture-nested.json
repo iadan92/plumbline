@@ -1,0 +1,133 @@
+{
+ "title": "Nested architecture",
+ "options": {
+  "gap": 150,
+  "row_gap": 60,
+  "show_lanes": false,
+  "group_pad": 22
+ },
+ "lanes": [
+  {
+   "id": "a",
+   "label": "sources"
+  },
+  {
+   "id": "b",
+   "label": "warehouse"
+  },
+  {
+   "id": "c",
+   "label": "transform"
+  },
+  {
+   "id": "d",
+   "label": "serving"
+  }
+ ],
+ "nodes": [
+  {
+   "id": "pg",
+   "title": "Postgres",
+   "lane": "a",
+   "row": 0,
+   "sub": "orders, customers",
+   "glyph": "db"
+  },
+  {
+   "id": "s3",
+   "title": "Partner S3",
+   "lane": "a",
+   "row": 1,
+   "sub": "daily CSV files",
+   "glyph": "file"
+  },
+  {
+   "id": "raw",
+   "title": "raw schemas",
+   "lane": "b",
+   "row": 0,
+   "sub": "as loaded",
+   "glyph": "db"
+  },
+  {
+   "id": "marts",
+   "title": "marts schemas",
+   "lane": "b",
+   "row": 1,
+   "sub": "facts, dimensions",
+   "glyph": "db"
+  },
+  {
+   "id": "dbt",
+   "title": "dbt project",
+   "lane": "c",
+   "row": 0.5,
+   "sub": "models and tests",
+   "glyph": "module"
+  },
+  {
+   "id": "bi",
+   "title": "Looker",
+   "lane": "d",
+   "row": 1,
+   "sub": "dashboards",
+   "glyph": "ui"
+  }
+ ],
+ "groups": [
+  {
+   "id": "platform",
+   "title": "Data platform",
+   "members": [
+    "airflow",
+    "bi"
+   ]
+  },
+  {
+   "id": "airflow",
+   "title": "Airflow orchestration",
+   "members": [
+    "pg",
+    "s3",
+    "snow",
+    "dbt"
+   ],
+   "sub": "nightly schedule"
+  },
+  {
+   "id": "snow",
+   "title": "Snowflake",
+   "members": [
+    "raw",
+    "marts"
+   ]
+  }
+ ],
+ "edges": [
+  {
+   "from": "pg",
+   "to": "raw",
+   "label": "load"
+  },
+  {
+   "from": "s3",
+   "to": "raw",
+   "label": "load"
+  },
+  {
+   "from": "raw",
+   "to": "dbt",
+   "label": "read"
+  },
+  {
+   "from": "dbt",
+   "to": "marts",
+   "label": "write"
+  },
+  {
+   "from": "marts",
+   "to": "bi",
+   "label": "query"
+  }
+ ]
+}

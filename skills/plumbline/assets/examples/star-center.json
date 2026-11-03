@@ -1,0 +1,196 @@
+{
+ "title": "Retail star schema (fact in the middle)",
+ "options": {
+  "gap": 140,
+  "lines": "lanes"
+ },
+ "lanes": [
+  {
+   "id": "l",
+   "label": "dimensions"
+  },
+  {
+   "id": "c",
+   "label": "fact"
+  },
+  {
+   "id": "r",
+   "label": "dimensions"
+  }
+ ],
+ "nodes": [
+  {
+   "id": "fct",
+   "title": "fct_sales",
+   "lane": "c",
+   "row": 0,
+   "state": "unchanged",
+   "glyph": "table",
+   "columns": [
+    {
+     "name": "sale_id",
+     "type": "varchar",
+     "key": "PK"
+    },
+    {
+     "name": "store_key",
+     "type": "integer",
+     "key": "FK"
+    },
+    {
+     "name": "customer_key",
+     "type": "integer",
+     "key": "FK"
+    },
+    {
+     "name": "date_key",
+     "type": "integer",
+     "key": "FK"
+    },
+    {
+     "name": "product_key",
+     "type": "integer",
+     "key": "FK"
+    },
+    {
+     "name": "quantity",
+     "type": "integer",
+     "key": null
+    },
+    {
+     "name": "net_amount",
+     "type": "numeric(12,2)",
+     "key": null
+    }
+   ]
+  },
+  {
+   "id": "dd",
+   "title": "dim_date",
+   "lane": "c",
+   "row": 1,
+   "state": "unchanged",
+   "glyph": "table",
+   "columns": [
+    {
+     "name": "date_key",
+     "type": "integer",
+     "key": "PK"
+    },
+    {
+     "name": "date_day",
+     "type": "date",
+     "key": null
+    },
+    {
+     "name": "month",
+     "type": "varchar",
+     "key": null
+    }
+   ]
+  },
+  {
+   "id": "ds",
+   "title": "dim_store",
+   "lane": "l",
+   "row": 0,
+   "state": "unchanged",
+   "glyph": "table",
+   "columns": [
+    {
+     "name": "store_key",
+     "type": "integer",
+     "key": "PK"
+    },
+    {
+     "name": "store_name",
+     "type": "varchar",
+     "key": null
+    },
+    {
+     "name": "region",
+     "type": "varchar",
+     "key": null
+    }
+   ]
+  },
+  {
+   "id": "dc",
+   "title": "dim_customer",
+   "lane": "l",
+   "row": 1,
+   "state": "unchanged",
+   "glyph": "table",
+   "columns": [
+    {
+     "name": "customer_key",
+     "type": "integer",
+     "key": "PK"
+    },
+    {
+     "name": "email",
+     "type": "varchar",
+     "key": null
+    },
+    {
+     "name": "segment",
+     "type": "varchar",
+     "key": null
+    }
+   ]
+  },
+  {
+   "id": "dp",
+   "title": "dim_product",
+   "lane": "r",
+   "row": 0,
+   "state": "unchanged",
+   "glyph": "table",
+   "columns": [
+    {
+     "name": "product_key",
+     "type": "integer",
+     "key": "PK"
+    },
+    {
+     "name": "name",
+     "type": "varchar",
+     "key": null
+    },
+    {
+     "name": "category",
+     "type": "varchar",
+     "key": null
+    }
+   ]
+  }
+ ],
+ "edges": [
+  {
+   "from": "fct",
+   "to": "ds",
+   "label": "FK",
+   "from_col": "store_key",
+   "to_col": "store_key"
+  },
+  {
+   "from": "fct",
+   "to": "dc",
+   "label": "FK",
+   "from_col": "customer_key",
+   "to_col": "customer_key"
+  },
+  {
+   "from": "fct",
+   "to": "dp",
+   "label": "FK",
+   "from_col": "product_key",
+   "to_col": "product_key"
+  },
+  {
+   "from": "fct",
+   "to": "dd",
+   "label": "FK"
+  }
+ ]
+}

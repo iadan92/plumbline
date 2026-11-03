@@ -1,0 +1,118 @@
+{
+ "title": "Batch analytics platform",
+ "options": {
+  "gap": 130
+ },
+ "lanes": [
+  {
+   "id": "src",
+   "label": "sources"
+  },
+  {
+   "id": "ing",
+   "label": "ingestion"
+  },
+  {
+   "id": "store",
+   "label": "storage"
+  },
+  {
+   "id": "tr",
+   "label": "transform"
+  },
+  {
+   "id": "srv",
+   "label": "serving"
+  }
+ ],
+ "nodes": [
+  {
+   "id": "api",
+   "title": "Orders API",
+   "lane": "src",
+   "row": 0,
+   "sub": "REST, paginated",
+   "glyph": "service"
+  },
+  {
+   "id": "files",
+   "title": "Partner CSV drop",
+   "lane": "src",
+   "row": 1,
+   "sub": "daily files",
+   "glyph": "file"
+  },
+  {
+   "id": "dlt",
+   "title": "Extract job",
+   "lane": "ing",
+   "row": 0,
+   "sub": "incremental, scheduled",
+   "glyph": "module"
+  },
+  {
+   "id": "q",
+   "title": "Landing queue",
+   "lane": "ing",
+   "row": 1,
+   "sub": "file events",
+   "glyph": "queue"
+  },
+  {
+   "id": "wh",
+   "title": "Warehouse",
+   "lane": "store",
+   "row": 0,
+   "sub": "raw + marts schemas",
+   "glyph": "db"
+  },
+  {
+   "id": "dbt",
+   "title": "dbt project",
+   "lane": "tr",
+   "row": 0,
+   "sub": "staging, marts, tests",
+   "glyph": "module"
+  },
+  {
+   "id": "bi",
+   "title": "Dashboard",
+   "lane": "srv",
+   "row": 0,
+   "sub": "revenue, top customers",
+   "glyph": "ui"
+  }
+ ],
+ "edges": [
+  {
+   "from": "api",
+   "to": "dlt",
+   "label": "HTTP"
+  },
+  {
+   "from": "files",
+   "to": "q",
+   "label": "notify"
+  },
+  {
+   "from": "dlt",
+   "to": "wh",
+   "label": "load"
+  },
+  {
+   "from": "q",
+   "to": "wh",
+   "label": "load"
+  },
+  {
+   "from": "wh",
+   "to": "dbt",
+   "label": "read"
+  },
+  {
+   "from": "dbt",
+   "to": "bi",
+   "label": "marts"
+  }
+ ]
+}
