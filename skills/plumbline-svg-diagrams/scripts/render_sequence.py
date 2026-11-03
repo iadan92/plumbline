@@ -153,6 +153,9 @@ def render_sequence(spec, opt, args_theme, args_animate, out_path):
                 bars.append((t, len(stack[t]), y - 5, y + 12, st))
             y += STEP_Y + (SELF_H + 6 if kind == "self" else 0)
         for i, stk in stack.items():
+            if stk:
+                warnings.append(f"phase {ph.get('id', '?')}: {len(stk)} call(s) into {parts[i]['title']} never return; "
+                                "add a reply or a return message, or use kind async for fire and forget")
             while stk:
                 y0, bst = stk.pop()
                 bars.append((i, len(stk), y0, y - 14, bst))
@@ -215,7 +218,7 @@ def render_sequence(spec, opt, args_theme, args_animate, out_path):
         add(f'<g filter="drop-shadow(0 1px 2px {T["shadow"]})"><rect x="{x:.1f}" y="{top}" width="{p["w"]}" height="{CARD_H}" rx="10" '
             f'fill="{T["card"]}" stroke="{stroke}" stroke-opacity="{sop}"/>'
             f'<rect x="{x + 14:.1f}" y="{top + 18}" width="26" height="26" rx="7" fill="{T["chip"]}"/>{glyph(p["glyph"], x + 14, top + 18, T["glyph"])}'
-            f'<text x="{x + 50:.1f}" y="{top + 27}" font-size="11.5" font-weight="600" fill="{T["title"]}">{esc(p["title"])}</text>'
+            f'<text x="{x + 50:.1f}" y="{top + (27 if p.get("sub") else 35)}" font-size="11.5" font-weight="600" fill="{T["title"]}">{esc(p["title"])}</text>'
             + (f'<text x="{x + 50:.1f}" y="{top + 45}" font-size="9.5" fill="{T["sub"]}" font-family="{MONO}">{esc(p["sub"])}</text>' if p.get("sub") else "")
             + '</g>')
 
@@ -321,3 +324,5 @@ def render_sequence(spec, opt, args_theme, args_animate, out_path):
           f"{len(parts)} participants, {len(paths)} messages)")
     for w_ in sorted(set(warnings)):
         print("WARNING:", w_)
+    if total_w > 1800:
+        print(f"NOTE: {total_w}px wide; slides and READMEs shrink it. Lower options.gap or use fewer participants per diagram.")

@@ -550,8 +550,9 @@ def main():
         add(f'<g filter="drop-shadow(0 1px 2px {T["shadow"]})"><rect x="{x}" y="{y0}" width="{w}" height="{h}" rx="10" '
             f'fill="{T["card"]}" stroke="{stroke}" stroke-opacity="{sop}" stroke-width="1"/>')
         add(f'<rect x="{x + 14}" y="{y0 + 18}" width="26" height="26" rx="7" fill="{T["chip"]}"/>{glyph(n["glyph"], x + 14, y0 + 18, T["glyph"])}')
-        add(f'<text x="{x + 50}" y="{y0 + 27}" font-size="11.5" font-weight="600" fill="{T["title"]}">{esc(n["title"])}</text>')
         sub = n.get("sub") or (f'{len(n["columns"])} columns' if n.get("columns") else "")
+        # without a subtitle the title sits level with the icon chip instead of hugging the top edge
+        add(f'<text x="{x + 50}" y="{y0 + (27 if sub else 35)}" font-size="11.5" font-weight="600" fill="{T["title"]}">{esc(n["title"])}</text>')
         if sub:
             add(f'<text x="{x + 50}" y="{y0 + 45}" font-size="9.5" fill="{T["sub"]}" font-family="{MONO}">{esc(sub)}</text>')
         badge = n.get("badge") or ("NEW" if opt["show_new"] and n["state"] == "added" else None)
@@ -585,6 +586,9 @@ def main():
     print(f"wrote {args.out} ({total_w}x{total_h}, theme={opt['theme']}, animate={opt['animate']})")
     for w_ in sorted(set(warnings)):
         print("WARNING:", w_)
+    if total_w > 1800:
+        print(f"NOTE: {total_w}px wide, too wide for a slide or README. Set options.card_w to about 170 and options.gap to about 110 "
+              "(keep gap above the longest label), merge two stages into one column, or split the diagram.")
 
 
 if __name__ == "__main__":

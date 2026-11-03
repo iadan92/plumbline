@@ -33,13 +33,13 @@ This skill lets the agent place each node explicitly, then routes every line for
 | **Sequence, dark** | **Sequence, headers per phase** (PR Lens style) |
 | ![Sequence dark](examples/sequence-pipeline-dark.svg) | ![Sequence phase headers](examples/sequence-phase-headers.svg) |
 
-The specs behind these images are in [`skills/plumbline/assets/examples/`](skills/plumbline/assets/examples/).
+The specs behind these images are in [`skills/plumbline-svg-diagrams/assets/examples/`](skills/plumbline-svg-diagrams/assets/examples/).
 
 ## Install
 
 ```bash
 # from GitHub
-npx skills add iadan92/plumbline
+npx skills add iadan92/plumbline          # installs the skill plumbline-svg-diagrams
 
 # from a local clone
 npx skills add ./plumbline
@@ -69,7 +69,7 @@ What happens: the agent writes a small JSON spec, runs the renderer, looks at th
 Run the renderer yourself:
 
 ```bash
-python3 skills/plumbline/scripts/render_diagram.py spec.json out.svg \
+python3 skills/plumbline-svg-diagrams/scripts/render_diagram.py spec.json out.svg \
     [--theme light|dark] [--animate none|packets|dashes]
 ```
 
@@ -93,13 +93,13 @@ python3 skills/plumbline/scripts/render_diagram.py spec.json out.svg \
 | `nodes[].columns` | Turns a card into a table: `[{"name", "type", "key"}]` with `key` of `PK`, `FK`, `PK,FK` or null. Edges can attach to a column with `from_col` and `to_col`. |
 | `edges` | `from`, `to`, short `label`, optional `style: "dotted"`, `state`, `step` (animation order). |
 | `groups` | Nested boxes around nodes or other groups, any depth. Use for containers such as an orchestrator around a pipeline. |
-| `type: "sequence"` | Sequence diagram: `participants`, `phases` of `messages` (`sync`, `return`, `async`, `self`, `note`), `frames`. No coordinates; see the sequence section in [`SKILL.md`](skills/plumbline/SKILL.md). |
+| `type: "sequence"` | Sequence diagram: `participants`, `phases` of `messages` (`sync`, `return`, `async`, `self`, `note`), `frames`. No coordinates; see the sequence section in [`SKILL.md`](skills/plumbline-svg-diagrams/SKILL.md). |
 | `layout: "star"` | Automatic star or snowflake layout. Give only tables and FK edges. |
 | `options.lines` | `merge` (shared trunk per target, good for lineage) or `lanes` (own vertical lane per line, needed for ERDs). |
 | `options.flip` | Mirrors the lane order. |
 | `options.show_lanes` | `false` hides lane backgrounds, useful with groups. |
 
-The full guide for the agent, including layout rules, is in [`SKILL.md`](skills/plumbline/SKILL.md).
+The full guide for the agent, including layout rules, is in [`SKILL.md`](skills/plumbline-svg-diagrams/SKILL.md).
 
 ### Layout rules that matter
 
@@ -111,16 +111,16 @@ The full guide for the agent, including layout rules, is in [`SKILL.md`](skills/
 
 ## Notes on data models
 
-`skills/plumbline/references/modeling-notes.md` collects conventions reviewers check: state the fact grain, use an order-line fact with a composite key instead of one product per order, let aggregates keep the conformed dimensions, give aggregates a time grain, and avoid storing the same metric in a dimension and an aggregate. Conventions vary by team; treat the notes as guidance.
+`skills/plumbline-svg-diagrams/references/modeling-notes.md` collects conventions reviewers check: state the fact grain, use an order-line fact with a composite key instead of one product per order, let aggregates keep the conformed dimensions, give aggregates a time grain, and avoid storing the same metric in a dimension and an aggregate. Conventions vary by team; treat the notes as guidance.
 
 ## Limits
 
 - Static drawings. The renderer places and routes what you specify; it does not lay out cycles or very large graphs. Past about 15 nodes per stage, generate lineage from the project instead (for example `dbt docs generate`).
 - Animation uses SMIL (a dot travels along each connection, stage by stage). It plays in browsers and in images rendered by GitHub, not in every viewer. Playback was not tested in all of them; the markup follows the structure PR Lens uses.
 - The light and dark themes use the PR Lens palette. The visual style is inspired by [PR Lens](https://github.com/coldteadotai/pr-lens) (MIT, Coldtea AI); no PR Lens code is used. This project is independent and not affiliated with or endorsed by PR Lens.
-- Trigger behaviour: in a measurement of 20 queries (10 that should use the skill, 10 that should not), the skill was picked on 7 of 10 and on none of the others. It triggers most reliably when the request mentions diagrams, lineage, ERDs or star schemas explicitly.
+- Trigger behaviour: in a measurement of 22 queries (11 that should use the skill, 11 that should not), the skill was picked on 5 of 11 and on none of the others. Agents with other drawing skills installed (for example Excalidraw) sometimes pick those, or start drawing without consulting any skill. The skill name contains "svg" on purpose: a name without it triggered on 0 of 11 in the same test. Ask for it by name ("use plumbline-svg-diagrams") when it does not fire.
 
-`skills/plumbline/references/pr-lens-notes.md` records what was learned about PR Lens' own layout engine (hints that have no effect, why lines loop, how lane order is decided) in case you use PR Lens directly.
+`skills/plumbline-svg-diagrams/references/pr-lens-notes.md` records what was learned about PR Lens' own layout engine (hints that have no effect, why lines loop, how lane order is decided) in case you use PR Lens directly.
 
 ## Repository layout
 
@@ -128,7 +128,7 @@ The full guide for the agent, including layout rules, is in [`SKILL.md`](skills/
 plumbline/
   README.md
   LICENSE
-  skills/plumbline/     the installable skill
+  skills/plumbline-svg-diagrams/     the installable skill
     SKILL.md                    instructions for the agent
     scripts/render_diagram.py   the renderer (stdlib only)
     scripts/preview_slices.py   macOS preview in slices (Quick Look crops wide SVGs)

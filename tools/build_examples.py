@@ -10,7 +10,7 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-SKILL = ROOT / "skills" / "plumbline"
+SKILL = ROOT / "skills" / "plumbline-svg-diagrams"
 SPECS = SKILL / "assets" / "examples"
 OUT = ROOT / "examples"
 

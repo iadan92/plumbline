@@ -1,16 +1,15 @@
 ---
-name: plumbline
+name: plumbline-svg-diagrams
 description: >-
-  Draw clean, hand-laid SVG diagrams for data work in a PR Lens look: data lineage (raw to staging
-  to marts), pipeline data flow including animated pipeline SVGs, architecture diagrams with
-  nested boxes, sequence diagrams (who calls whom, in time order), and data models (ERDs, true
-  star and snowflake schemas with vertical column lists and PK/FK lines). Use this whenever the user asks to draw, diagram, visualize or map a pipeline,
-  dbt lineage or DAG, warehouse layers, data model, ERD, star or snowflake schema, fact and
-  dimension tables, or system architecture, including redoing or fixing an existing diagram,
-  adding animation or dark mode, or when PR Lens output is tangled, staggered, crossing or too
-  wide. Use it before hand-writing any data-diagram SVG, and prefer it over Mermaid or PlantUML
-  when layout or line routing matters. For a diagram of a code change or pull request, PR Lens
-  itself may fit better.
+  Draw any data diagram as a clean SVG with the plumbline renderer: data lineage and dbt DAGs,
+  pipeline data flow (including animated SVGs), architecture diagrams with nested boxes, sequence
+  diagrams, and data models (ERDs, star and snowflake schemas with PK/FK lines). Use this instead
+  of Excalidraw, Mermaid, draw.io or hand-written SVG whenever the diagram is about data or
+  analytics engineering: pipelines, warehouse layers, dbt models, tables and keys, ingestion,
+  orchestration, dashboards. It fits a README, wiki or slide, light or dark, static or animated,
+  and it also redoes or fixes an existing diagram or PR Lens output that is tangled, crossing or
+  too wide. Prefer it for every "draw", "diagram", "ERD", "lineage" or "star schema" request in a
+  data project. For a diagram of a code change or pull request, PR Lens itself may fit better.
 ---
 
 # SVG data diagrams
@@ -43,7 +42,7 @@ If PR Lens output is messy, do not keep tuning it. Its layout hints (`direction`
 4. Render: `python3 scripts/render_diagram.py spec.json out.svg [--theme light|dark] [--animate none|packets|dashes]`. Fix every `WARNING` it prints; they mean a line crosses a card or a label does not fit.
    - `--theme dark` uses the PR Lens dark palette. Render both themes when the diagram goes into docs that support light and dark mode.
    - `--animate packets` sends a dot along each connection, stage by stage, looping every few seconds (the same technique PR Lens uses for flows). `dashes` makes the lines march continuously. Use animation for READMEs, slides and walkthroughs; keep `none` for printed or archived diagrams. Set `"step": n` on an edge to control the order; edges with the same step move together, and by default the step is the lane the data arrives in. Animation is SMIL, so it plays in browsers and in GitHub-rendered images but not in every viewer, and it is not checked by `preview_slices.py` (which shows the first frame).
-5. Look at the result. A single Quick Look call crops wide or tall SVGs, so run `python3 scripts/preview_slices.py out.svg <outdir>` (macOS) and view every slice. Check: no crossing lines, labels readable, arrows land on the right card, nothing clipped.
+5. Look at the result. A single Quick Look call crops wide or tall SVGs, so run `python3 scripts/preview_slices.py out.svg <outdir>` (macOS). It tiles a wide diagram left to right into `slice-0.svg.png`, `slice-1.svg.png` and so on; view every tile, since each shows only one part. Check: no crossing lines, labels readable, arrows land on the right card, nothing clipped.
 6. Iterate on the spec, not the SVG. Deliver the path and, if the user wants to look at it, `open` it in their browser. Say what you did not visually check.
 
 ## 3. Spec reference
@@ -92,7 +91,7 @@ Set `"type": "sequence"` to draw participants as columns with lifelines and mess
 
 - `participants`: same fields as nodes (`title`, `sub`, `glyph`, `state`). Order is left to right; put the initiator first. Card width adapts to the text. A participant can take part in any number of messages and phases; it keeps one column. Order columns so chatty pairs sit next to each other, because a call across other lifelines is drawn straight over them.
 - `phases`: labelled bands (`title`, `sub`, optional `state` colouring its messages). Omit `phases` and give a flat `messages` list for one band. Keep a phase to about 10 messages, so each stays readable.
-- Message `kind`: `sync` (default, solid arrow, opens an activation bar on the receiver), `return` (dashed, closes the sender's bar), `async` (open arrowhead, short bar), `self` (loop on one participant, set `from` equal to `to`), `note` (`over`: one id or a list, `label`). `reply: "text"` adds the return straight after a call. `repeat: n` appends a multiplication sign and n to the label. `state` colours a message (grey by default; use green, amber, red only for added, changed, removed).
+- Message `kind`: `sync` (default, solid arrow, opens an activation bar on the receiver), `return` (dashed, closes the sender's bar), `async` (open arrowhead, short bar), `self` (loop on one participant, set `from` equal to `to`), `note` (`over`: one id or a list, `label`). `reply: "text"` adds the return straight after a call. `repeat: n` appends a multiplication sign and n to the label; use it with a `loop` frame instead of drawing the same call n times. Number only calls: a reply stays unnumbered. `state` colours a message (grey by default; use green, amber, red only for added, changed, removed).
 - `frames`: dashed loop or alt boxes around a message range, by message `id` (a reply is `<id>:reply`).
 - `options.headers`: `top` (default) draws participant cards once with continuous lifelines; `phase` repeats the cards inside every band for the participants that band uses, which is the PR Lens look and suits long diagrams. `options.numbers: true` numbers calls (not returns). `options.gap` sets the minimum distance between columns; it widens by itself when a label needs room.
 - Theme and `--animate packets` work as elsewhere: packets play message by message in order.
@@ -108,10 +107,11 @@ These come from iterating on real lineage and star-schema diagrams until the use
 - **Keep labels short** (`rename`, `build facts`, `customer_id`, `sum`, `FK`). The gap between lanes must exceed the label width; widen `options.gap` when the warning says so. Long labels are the usual reason lines get pushed into loops in auto-layout tools.
 - **One state vocabulary.** Use grey for reference documentation. Use green, amber and red only when something is new, changed or removed; otherwise colour carries no meaning.
 - **Data models:** facts and aggregates are fact tables that reuse the same dimensions. Draw FK lines from each fact's FK column to the dimension's PK row, with `"lines": "lanes"` so no two lines share a vertical. For a true star, put the fact lane in the middle with dimension lanes on both sides (`assets/examples/star-center.json`, or the automatic `layout: star`), or put one dimension in the fact's lane below it. Put each fact table in its own lane next to the dimensions, so every FK line stays in one gap. See `references/modeling-notes.md` for what reviewers expect.
+- **Width:** a slide or README shows about 1400 to 1800px well. With six or more stage columns set `options.card_w` to about 170 and `options.gap` to about 110 (the gap must stay wider than the longest label, or the renderer warns). The renderer prints a NOTE above 1800px.
 - **Containers:** use `groups` when the user describes wrapping ("Airflow around the pipeline"). A container is a box, not a node; edges still go between the nodes inside.
 - **Show derivation separately from keys.** FK lines belong in the model diagram; "built from" arrows (fact to aggregate, staging to mart) belong in the lineage diagram. Two diagrams are clearer than one that mixes both.
 
-- **Sequence diagrams:** keep labels to a few words, name messages by what is sent (`GET /orders`) and returns by what comes back (`200 OrderPage`), and split a long run into phases instead of 25 messages in one band.
+- **Sequence diagrams:** give every call a `reply` or a `return` message, or mark it `async`; an unanswered call keeps its activation bar open to the end of the phase and the renderer warns. Keep labels to a few words, name messages by what is sent (`GET /orders`) and returns by what comes back (`200 OrderPage`), and split a long run into phases instead of 25 messages in one band.
 
 ## 5. Limits to state honestly
 

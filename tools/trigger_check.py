@@ -1,9 +1,9 @@
 """Measure whether the installed skill triggers.
 
-Usage: python3 tools/trigger_check.py evals/trigger-evals.json results.json
+Usage: python3 tools/trigger_check.py evals/trigger-evals.json results.json [skill-name]
 
-Runs each query with `claude -p --max-turns 1` in an empty temporary directory and checks whether the first
-action is a Skill call for plumbline. The skill must be installed (project or user level). One run per
+Runs each query with `claude -p --max-turns $MAX_TURNS (default 3)` in an empty temporary directory and checks whether the first
+action is a Skill call for plumbline-svg-diagrams. The skill must be installed (project or user level). One run per
 query is noisy, so read the result as a rough rate, not a score. Requires the Claude Code CLI.
 """
 import json, os, subprocess, sys, tempfile
@@ -11,13 +11,15 @@ from concurrent.futures import ThreadPoolExecutor
 
 evals = json.load(open(sys.argv[1]))
 out = sys.argv[2]
+SKILL = sys.argv[3] if len(sys.argv) > 3 else "plumbline-svg-diagrams"
+MAX_TURNS = os.environ.get("MAX_TURNS", "3")   # a first action such as Read or Glob is not a miss; the Skill call may come on turn 2 or 3
 env = {k: v for k, v in os.environ.items() if k != "CLAUDECODE"}
 WORKDIR = tempfile.mkdtemp(prefix="trigger-check-")
 
 
 def run(item):
     try:
-        p = subprocess.run(["claude", "-p", item["query"], "--output-format", "stream-json", "--verbose", "--max-turns", "1"],
+        p = subprocess.run(["claude", "-p", item["query"], "--output-format", "stream-json", "--verbose", "--max-turns", MAX_TURNS],
                            capture_output=True, text=True, timeout=240, cwd=WORKDIR, env=env)
     except subprocess.TimeoutExpired:
         return {**item, "triggered": None, "calls": ["timeout"]}
@@ -31,7 +33,7 @@ def run(item):
             for c in e["message"].get("content", []):
                 if c.get("type") == "tool_use":
                     calls.append(c["name"] + (":" + str(c["input"].get("skill", "")) if c["name"] == "Skill" else ""))
-    return {**item, "triggered": any(c == "Skill:plumbline" for c in calls), "calls": calls}
+    return {**item, "triggered": any(c == "Skill:" + SKILL for c in calls), "calls": calls}
 
 
 with ThreadPoolExecutor(5) as ex:
