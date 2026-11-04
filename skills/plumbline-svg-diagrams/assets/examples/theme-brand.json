@@ -1,0 +1,26 @@
+{
+  "theme": "light",
+  "font": "Inter, Segoe UI, Arial, sans-serif",
+  "palette": {
+    "bg": "#fbf7f0",
+    "card": "#fffdf9",
+    "card_stroke": "#e3d9c8",
+    "title": "#2b1d0e",
+    "lane": "rgba(120,90,40,.07)",
+    "lane_label": "#7a5b2e",
+    "glyph": "#7a5b2e",
+    "chip": "#f3eadb",
+    "states": {
+      "unchanged": {
+        "line": "#b07d2b",
+        "text": "#7a5b2e",
+        "fill": "#f3eadb"
+      },
+      "added": {
+        "line": "#2f7d4f",
+        "text": "#1f5c38",
+        "fill": "#d7efdf"
+      }
+    }
+  }
+}

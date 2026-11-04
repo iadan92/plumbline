@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1697 604" width="1697" height="604" role="img" aria-label="Lineage by stage (v2)" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;Noto Sans&quot;, Helvetica, Arial, sans-serif">
+<title>Lineage by stage (v2)</title>
+<defs><pattern id="dots" width="18" height="18" patternUnits="userSpaceOnUse"><circle cx="1.5" cy="1.5" r="1" fill="rgba(140,149,159,.5)"/></pattern><marker id="mk-added" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1f883d"/></marker><marker id="mk-removed" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#cf222e"/></marker><marker id="mk-unchanged" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#8c959f"/></marker></defs>
+<rect width="1697" height="604" rx="12" fill="#f4f5f7"/><rect width="1697" height="604" rx="12" fill="url(#dots)"/>
+<g transform="translate(0,0)">
+<g><rect x="32" y="28" width="249" height="526" rx="12" fill="rgba(255,255,255,.55)"/><text x="48" y="54" font-size="10" font-weight="700" letter-spacing=".12em" fill="#59636e">RAW</text><text x="48" y="70" font-size="9.5" fill="#8c959f">loaded by ingestion</text></g>
+<g><rect x="383" y="28" width="249" height="526" rx="12" fill="rgba(255,255,255,.55)"/><text x="399" y="54" font-size="10" font-weight="700" letter-spacing=".12em" fill="#59636e">STAGING</text><text x="399" y="70" font-size="9.5" fill="#8c959f">views</text></g>
+<g><rect x="734" y="28" width="249" height="526" rx="12" fill="rgba(255,255,255,.55)"/><text x="750" y="54" font-size="10" font-weight="700" letter-spacing=".12em" fill="#59636e">DIMENSIONS</text><text x="750" y="70" font-size="9.5" fill="#8c959f">tables</text></g>
+<g><rect x="1085" y="28" width="249" height="526" rx="12" fill="rgba(255,255,255,.55)"/><text x="1101" y="54" font-size="10" font-weight="700" letter-spacing=".12em" fill="#59636e">FACTS</text><text x="1101" y="70" font-size="9.5" fill="#8c959f">tables</text></g>
+<g><rect x="1436" y="28" width="249" height="526" rx="12" fill="rgba(255,255,255,.55)"/><text x="1452" y="54" font-size="10" font-weight="700" letter-spacing=".12em" fill="#59636e">AGGREGATES</text><text x="1452" y="70" font-size="9.5" fill="#8c959f">tables, derived</text></g>
+<path d="M265.0,131.0 L399.0,131.0" marker-end="url(#mk-unchanged)" fill="none" stroke="#8c959f" stroke-width="1.5"></path>
+<path d="M265.0,223.0 L399.0,223.0" marker-end="url(#mk-unchanged)" fill="none" stroke="#8c959f" stroke-width="1.5"></path>
+<path d="M265.0,315.0 L399.0,315.0" marker-end="url(#mk-unchanged)" fill="none" stroke="#8c959f" stroke-width="1.5"></path>
+<path d="M616.0,223.0 L750.0,223.0" marker-end="url(#mk-unchanged)" fill="none" stroke="#8c959f" stroke-width="1.5"></path>
+<path d="M616.0,315.0 L750.0,315.0" marker-end="url(#mk-unchanged)" fill="none" stroke="#8c959f" stroke-width="1.5"></path>
+<path d="M616.0,131.0 L1101.0,131.0" marker-end="url(#mk-unchanged)" fill="none" stroke="#8c959f" stroke-width="1.5"></path>
+<path d="M967.0,223.0 L1053.0,223.0 Q1061.0,223.0 1061.0,215.0 L1061.0,139.0 Q1061.0,131.0 1069.0,131.0 L1101.0,131.0" marker-end="url(#mk-unchanged)" fill="none" stroke="#8c959f" stroke-width="1.5"></path>
+<path d="M967.0,315.0 L1053.0,315.0 Q1061.0,315.0 1061.0,307.0 L1061.0,139.0 Q1061.0,131.0 1069.0,131.0 L1101.0,131.0" marker-end="url(#mk-unchanged)" fill="none" stroke="#8c959f" stroke-width="1.5"></path>
+<path d="M967.0,407.0 L1053.0,407.0 Q1061.0,407.0 1061.0,399.0 L1061.0,139.0 Q1061.0,131.0 1069.0,131.0 L1101.0,131.0" marker-end="url(#mk-unchanged)" fill="none" stroke="#8c959f" stroke-width="1.5"></path>
+<path d="M1318.0,131.0 L1404.0,131.0 Q1412.0,131.0 1412.0,139.0 L1412.0,215.0 Q1412.0,223.0 1420.0,223.0 L1452.0,223.0" marker-end="url(#mk-unchanged)" fill="none" stroke="#8c959f" stroke-width="1.5"></path>
+<path d="M265.0,407.0 L702.0,407.0 Q710.0,407.0 710.0,415.0 L710.0,491.0 Q710.0,499.0 718.0,499.0 L750.0,499.0" marker-end="url(#mk-added)" fill="none" stroke="#1f883d" stroke-width="1.5"></path>
+<path d="M967.0,499.0 L1053.0,499.0 Q1061.0,499.0 1061.0,491.0 L1061.0,139.0 Q1061.0,131.0 1069.0,131.0 L1101.0,131.0" marker-end="url(#mk-added)" fill="none" stroke="#1f883d" stroke-width="1.5"></path>
+<path d="M1318.0,131.0 L1404.0,131.0 Q1412.0,131.0 1412.0,139.0 L1412.0,307.0 Q1412.0,315.0 1420.0,315.0 L1452.0,315.0" marker-end="url(#mk-removed)" fill="none" stroke="#cf222e" stroke-width="1.5" stroke-dasharray="6 4"></path>
+<g filter="drop-shadow(0 1px 2px rgba(31,35,40,.14))"><rect x="48.0" y="100" width="217" height="62" rx="10" fill="#ffffff" stroke="#d0d7de" stroke-opacity="1" stroke-width="1"/>
+<rect x="62.0" y="118" width="26" height="26" rx="7" fill="#f1f3f5"/><ellipse stroke="#59636e" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round" cx="75.0" cy="126.5" rx="6.5" ry="2.6"/><path stroke="#59636e" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round" d="M68.5,126.5 v9 a6.5,2.6 0 0 0 13 0 v-9"/>
+<text x="98.0" y="127" font-size="11.5" font-weight="600" fill="#1f2328">raw.orders</text>
+<text x="98.0" y="145" font-size="9.5" fill="#59636e" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">PK id, FK customer_id, ...</text>
+</g>
+<g filter="drop-shadow(0 1px 2px rgba(31,35,40,.14))"><rect x="48.0" y="192" width="217" height="62" rx="10" fill="#ffffff" stroke="#d0d7de" stroke-opacity="1" stroke-width="1"/>
+<rect x="62.0" y="210" width="26" height="26" rx="7" fill="#f1f3f5"/><ellipse stroke="#59636e" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round" cx="75.0" cy="218.5" rx="6.5" ry="2.6"/><path stroke="#59636e" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round" d="M68.5,218.5 v9 a6.5,2.6 0 0 0 13 0 v-9"/>
+<text x="98.0" y="219" font-size="11.5" font-weight="600" fill="#1f2328">raw.customers</text>
+<text x="98.0" y="237" font-size="9.5" fill="#59636e" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">PK id, email, created_at</text>
+</g>
+<g filter="drop-shadow(0 1px 2px rgba(31,35,40,.14))"><rect x="48.0" y="284" width="217" height="62" rx="10" fill="#ffffff" stroke="#d0d7de" stroke-opacity="1" stroke-width="1"/>
+<rect x="62.0" y="302" width="26" height="26" rx="7" fill="#f1f3f5"/><ellipse stroke="#59636e" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round" cx="75.0" cy="310.5" rx="6.5" ry="2.6"/><path stroke="#59636e" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round" d="M68.5,310.5 v9 a6.5,2.6 0 0 0 13 0 v-9"/>
+<text x="98.0" y="311" font-size="11.5" font-weight="600" fill="#1f2328">raw.products</text>
+<text x="98.0" y="329" font-size="9.5" fill="#59636e" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">PK id, name, category</text>
+</g>
+<g filter="drop-shadow(0 1px 2px rgba(31,35,40,.14))"><rect x="399.0" y="100" width="217" height="62" rx="10" fill="#ffffff" stroke="#d0d7de" stroke-opacity="1" stroke-width="1"/>
+<rect x="413.0" y="118" width="26" height="26" rx="7" fill="#f1f3f5"/><text x="426.0" y="135" text-anchor="middle" font-size="11" font-weight="600" fill="#59636e" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">{ }</text>
+<text x="449.0" y="127" font-size="11.5" font-weight="600" fill="#1f2328">stg_orders</text>
+<text x="449.0" y="145" font-size="9.5" fill="#59636e" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">PK order_id, FK customer_id</text>
+</g>
+<g filter="drop-shadow(0 1px 2px rgba(31,35,40,.14))"><rect x="399.0" y="192" width="217" height="62" rx="10" fill="#ffffff" stroke="#d0d7de" stroke-opacity="1" stroke-width="1"/>
+<rect x="413.0" y="210" width="26" height="26" rx="7" fill="#f1f3f5"/><text x="426.0" y="227" text-anchor="middle" font-size="11" font-weight="600" fill="#59636e" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">{ }</text>
+<text x="449.0" y="219" font-size="11.5" font-weight="600" fill="#1f2328">stg_customers</text>
+<text x="449.0" y="237" font-size="9.5" fill="#59636e" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">PK customer_id, email</text>
+</g>
+<g filter="drop-shadow(0 1px 2px rgba(31,35,40,.14))"><rect x="399.0" y="284" width="217" height="62" rx="10" fill="#ffffff" stroke="#d0d7de" stroke-opacity="1" stroke-width="1"/>
+<rect x="413.0" y="302" width="26" height="26" rx="7" fill="#f1f3f5"/><text x="426.0" y="319" text-anchor="middle" font-size="11" font-weight="600" fill="#59636e" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">{ }</text>
+<text x="449.0" y="311" font-size="11.5" font-weight="600" fill="#1f2328">stg_products</text>
+<text x="449.0" y="329" font-size="9.5" fill="#59636e" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">PK product_id, name, category</text>
+</g>
+<g filter="drop-shadow(0 1px 2px rgba(31,35,40,.14))"><rect x="750.0" y="192" width="217" height="62" rx="10" fill="#ffffff" stroke="#d0d7de" stroke-opacity="1" stroke-width="1"/>
+<rect x="764.0" y="210" width="26" height="26" rx="7" fill="#f1f3f5"/><ellipse stroke="#59636e" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round" cx="777.0" cy="218.5" rx="6.5" ry="2.6"/><path stroke="#59636e" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round" d="M770.5,218.5 v9 a6.5,2.6 0 0 0 13 0 v-9"/>
+<text x="800.0" y="219" font-size="11.5" font-weight="600" fill="#1f2328">dim_customers</text>
+<text x="800.0" y="237" font-size="9.5" fill="#59636e" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">PK customer_id, email, ...</text>
+</g>
+<g filter="drop-shadow(0 1px 2px rgba(31,35,40,.14))"><rect x="750.0" y="284" width="217" height="62" rx="10" fill="#ffffff" stroke="#d0d7de" stroke-opacity="1" stroke-width="1"/>
+<rect x="764.0" y="302" width="26" height="26" rx="7" fill="#f1f3f5"/><ellipse stroke="#59636e" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round" cx="777.0" cy="310.5" rx="6.5" ry="2.6"/><path stroke="#59636e" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round" d="M770.5,310.5 v9 a6.5,2.6 0 0 0 13 0 v-9"/>
+<text x="800.0" y="311" font-size="11.5" font-weight="600" fill="#1f2328">dim_products</text>
+<text x="800.0" y="329" font-size="9.5" fill="#59636e" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">PK product_id, name, category</text>
+</g>
+<g filter="drop-shadow(0 1px 2px rgba(31,35,40,.14))"><rect x="750.0" y="376" width="217" height="62" rx="10" fill="#ffffff" stroke="#d0d7de" stroke-opacity="1" stroke-width="1"/>
+<rect x="764.0" y="394" width="26" height="26" rx="7" fill="#f1f3f5"/><ellipse stroke="#59636e" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round" cx="777.0" cy="402.5" rx="6.5" ry="2.6"/><path stroke="#59636e" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round" d="M770.5,402.5 v9 a6.5,2.6 0 0 0 13 0 v-9"/>
+<text x="800.0" y="403" font-size="11.5" font-weight="600" fill="#1f2328">dim_dates</text>
+<text x="800.0" y="421" font-size="9.5" fill="#59636e" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">generated, PK date_key, ...</text>
+</g>
+<g filter="drop-shadow(0 1px 2px rgba(31,35,40,.14))"><rect x="1101.0" y="100" width="217" height="62" rx="10" fill="#ffffff" stroke="#bf8700" stroke-opacity="0.55" stroke-width="1"/>
+<rect x="1115.0" y="118" width="26" height="26" rx="7" fill="#f1f3f5"/><ellipse stroke="#59636e" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round" cx="1128.0" cy="126.5" rx="6.5" ry="2.6"/><path stroke="#59636e" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round" d="M1121.5,126.5 v9 a6.5,2.6 0 0 0 13 0 v-9"/>
+<text x="1151.0" y="127" font-size="11.5" font-weight="600" fill="#1f2328">fct_order_items</text>
+<text x="1151.0" y="145" font-size="9.5" fill="#59636e" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">PK order_id, store_id, ...</text>
+<g><rect x="1248.0" y="92" width="58" height="16" rx="8" fill="#fff1b8" stroke="#d1d9e0"/><text x="1277.0" y="103" text-anchor="middle" font-size="8.5" font-weight="700" letter-spacing=".06em" fill="#7d4e00">CHANGED</text></g>
+</g>
+<g filter="drop-shadow(0 1px 2px rgba(31,35,40,.14))"><rect x="1452.0" y="192" width="217" height="62" rx="10" fill="#ffffff" stroke="#d0d7de" stroke-opacity="1" stroke-width="1"/>
+<rect x="1466.0" y="210" width="26" height="26" rx="7" fill="#f1f3f5"/><ellipse stroke="#59636e" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round" cx="1479.0" cy="218.5" rx="6.5" ry="2.6"/><path stroke="#59636e" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round" d="M1472.5,218.5 v9 a6.5,2.6 0 0 0 13 0 v-9"/>
+<text x="1502.0" y="219" font-size="11.5" font-weight="600" fill="#1f2328">agg_customer_totals</text>
+<text x="1502.0" y="237" font-size="9.5" fill="#59636e" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">PK customer_id, date_key</text>
+</g>
+<g filter="drop-shadow(0 1px 2px rgba(31,35,40,.14))"><rect x="48.0" y="376" width="217" height="62" rx="10" fill="#ffffff" stroke="#1f883d" stroke-opacity="0.55" stroke-width="1"/>
+<rect x="62.0" y="394" width="26" height="26" rx="7" fill="#f1f3f5"/><ellipse stroke="#59636e" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round" cx="75.0" cy="402.5" rx="6.5" ry="2.6"/><path stroke="#59636e" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round" d="M68.5,402.5 v9 a6.5,2.6 0 0 0 13 0 v-9"/>
+<text x="98.0" y="403" font-size="11.5" font-weight="600" fill="#1f2328">raw.stores</text>
+<text x="98.0" y="421" font-size="9.5" fill="#59636e" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">PK id, region</text>
+<g><rect x="207.0" y="368" width="46" height="16" rx="8" fill="#b9f0c4" stroke="#d1d9e0"/><text x="230.0" y="379" text-anchor="middle" font-size="8.5" font-weight="700" letter-spacing=".06em" fill="#116329">ADDED</text></g>
+</g>
+<g filter="drop-shadow(0 1px 2px rgba(31,35,40,.14))"><rect x="750.0" y="468" width="217" height="62" rx="10" fill="#ffffff" stroke="#1f883d" stroke-opacity="0.55" stroke-width="1"/>
+<rect x="764.0" y="486" width="26" height="26" rx="7" fill="#f1f3f5"/><rect stroke="#59636e" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round" x="770.5" y="493" width="13" height="12" rx="2"/><path stroke="#59636e" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round" d="M770.5,497.5 h13 M776.0,497.5 v7.5"/>
+<text x="800.0" y="495" font-size="11.5" font-weight="600" fill="#1f2328">dim_stores</text>
+<text x="800.0" y="513" font-size="9.5" fill="#59636e" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">PK store_id, region</text>
+<g><rect x="909.0" y="460" width="46" height="16" rx="8" fill="#b9f0c4" stroke="#d1d9e0"/><text x="932.0" y="471" text-anchor="middle" font-size="8.5" font-weight="700" letter-spacing=".06em" fill="#116329">ADDED</text></g>
+</g>
+<g filter="drop-shadow(0 1px 2px rgba(31,35,40,.14))" opacity="0.8"><rect x="1452.0" y="284" width="217" height="62" rx="10" fill="#ffffff" stroke="#cf222e" stroke-opacity="0.55" stroke-width="1" stroke-dasharray="5 4"/>
+<rect x="1466.0" y="302" width="26" height="26" rx="7" fill="#f1f3f5"/><ellipse stroke="#59636e" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round" cx="1479.0" cy="310.5" rx="6.5" ry="2.6"/><path stroke="#59636e" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round" d="M1472.5,310.5 v9 a6.5,2.6 0 0 0 13 0 v-9"/>
+<text x="1502.0" y="311" font-size="11.5" font-weight="600" fill="#1f2328" text-decoration="line-through">agg_product_sales</text>
+<text x="1502.0" y="329" font-size="9.5" fill="#59636e" font-family="ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace">PK product_id, date_key</text>
+<g><rect x="1599.0" y="276" width="58" height="16" rx="8" fill="#ffd1d4" stroke="#d1d9e0"/><text x="1628.0" y="287" text-anchor="middle" font-size="8.5" font-weight="700" letter-spacing=".06em" fill="#82071e">REMOVED</text></g>
+</g>
+<g><rect x="279.8" y="122.5" width="104.5" height="17" rx="8.5" fill="#ffffff" stroke="#d1d9e0"/><text x="332.0" y="134.2" text-anchor="middle" font-size="9" font-weight="600" fill="#59636e">cast and rename</text></g>
+<g><rect x="306.3" y="214.5" width="51.4" height="17" rx="8.5" fill="#ffffff" stroke="#d1d9e0"/><text x="332.0" y="226.2" text-anchor="middle" font-size="9" font-weight="600" fill="#59636e">rename</text></g>
+<g><rect x="306.3" y="306.5" width="51.4" height="17" rx="8.5" fill="#ffffff" stroke="#d1d9e0"/><text x="332.0" y="318.2" text-anchor="middle" font-size="9" font-weight="600" fill="#59636e">rename</text></g>
+<g><rect x="630.8" y="214.5" width="104.5" height="17" rx="8.5" fill="#ffffff" stroke="#d1d9e0"/><text x="683.0" y="226.2" text-anchor="middle" font-size="9" font-weight="600" fill="#59636e">build dimension</text></g>
+<g><rect x="630.8" y="306.5" width="104.5" height="17" rx="8.5" fill="#ffffff" stroke="#d1d9e0"/><text x="683.0" y="318.2" text-anchor="middle" font-size="9" font-weight="600" fill="#59636e">build dimension</text></g>
+<g><rect x="818.0" y="122.5" width="80.9" height="17" rx="8.5" fill="#ffffff" stroke="#d1d9e0"/><text x="858.5" y="134.2" text-anchor="middle" font-size="9" font-weight="600" fill="#59636e">build facts</text></g>
+<g><rect x="973.5" y="214.5" width="80.9" height="17" rx="8.5" fill="#ffffff" stroke="#d1d9e0"/><text x="1014.0" y="226.2" text-anchor="middle" font-size="9" font-weight="600" fill="#59636e">customer_id</text></g>
+<g><rect x="976.5" y="306.5" width="75.0" height="17" rx="8.5" fill="#ffffff" stroke="#d1d9e0"/><text x="1014.0" y="318.2" text-anchor="middle" font-size="9" font-weight="600" fill="#59636e">product_id</text></g>
+<g><rect x="982.4" y="398.5" width="63.2" height="17" rx="8.5" fill="#ffffff" stroke="#d1d9e0"/><text x="1014.0" y="410.2" text-anchor="middle" font-size="9" font-weight="600" fill="#59636e">date_key</text></g>
+<g><rect x="1348.2" y="122.5" width="33.7" height="17" rx="8.5" fill="#ffffff" stroke="#d1d9e0"/><text x="1365.0" y="134.2" text-anchor="middle" font-size="9" font-weight="600" fill="#59636e">sum</text></g>
+<g><rect x="461.8" y="398.5" width="51.4" height="17" rx="8.5" fill="#ffffff" stroke="#d1d9e0"/><text x="487.5" y="410.2" text-anchor="middle" font-size="9" font-weight="600" fill="#116329">rename</text></g>
+<g><rect x="982.4" y="490.5" width="63.2" height="17" rx="8.5" fill="#ffffff" stroke="#d1d9e0"/><text x="1014.0" y="502.2" text-anchor="middle" font-size="9" font-weight="600" fill="#116329">store_id</text></g>
+</g><g><rect x="1589.9" y="574" width="75.1" height="18" rx="9" fill="#ffffff" stroke="#d1d9e0"/><circle cx="1600.9" cy="583" r="3.6" fill="#8c959f"/><text x="1609.9" y="586.3" font-size="9" font-weight="600" fill="#59636e">Unchanged</text></g><g><rect x="1506.8" y="574" width="75.1" height="18" rx="9" fill="#ffffff" stroke="#d1d9e0"/><circle cx="1517.8" cy="583" r="3.6" fill="#cf222e"/><text x="1526.8" y="586.3" font-size="9" font-weight="600" fill="#82071e">Removed 2</text></g><g><rect x="1423.7" y="574" width="75.1" height="18" rx="9" fill="#ffffff" stroke="#d1d9e0"/><circle cx="1434.7" cy="583" r="3.6" fill="#bf8700"/><text x="1443.7" y="586.3" font-size="9" font-weight="600" fill="#7d4e00">Changed 1</text></g><g><rect x="1352.4" y="574" width="63.3" height="18" rx="9" fill="#ffffff" stroke="#d1d9e0"/><circle cx="1363.4" cy="583" r="3.6" fill="#1f883d"/><text x="1372.4" y="586.3" font-size="9" font-weight="600" fill="#116329">Added 4</text></g></svg>

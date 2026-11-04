@@ -1,0 +1,212 @@
+{
+  "title": "Lineage by stage (v2)",
+  "options": {
+    "gap": 150,
+    "fit_width": 1700
+  },
+  "lanes": [
+    {
+      "id": "raw",
+      "label": "raw",
+      "sub": "loaded by ingestion"
+    },
+    {
+      "id": "stg",
+      "label": "staging",
+      "sub": "views"
+    },
+    {
+      "id": "dim",
+      "label": "dimensions",
+      "sub": "tables"
+    },
+    {
+      "id": "fct",
+      "label": "facts",
+      "sub": "tables"
+    },
+    {
+      "id": "agg",
+      "label": "aggregates",
+      "sub": "tables, derived"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "raw_orders",
+      "title": "raw.orders",
+      "lane": "raw",
+      "row": 0,
+      "sub": "PK id, FK customer_id, ...",
+      "glyph": "db",
+      "state": "added"
+    },
+    {
+      "id": "raw_customers",
+      "title": "raw.customers",
+      "lane": "raw",
+      "row": 1,
+      "sub": "PK id, email, created_at",
+      "glyph": "db",
+      "state": "added"
+    },
+    {
+      "id": "raw_products",
+      "title": "raw.products",
+      "lane": "raw",
+      "row": 2,
+      "sub": "PK id, name, category",
+      "glyph": "db",
+      "state": "added"
+    },
+    {
+      "id": "stg_orders",
+      "title": "stg_orders",
+      "lane": "stg",
+      "row": 0,
+      "sub": "PK order_id, FK customer_id",
+      "glyph": "module",
+      "state": "added"
+    },
+    {
+      "id": "stg_customers",
+      "title": "stg_customers",
+      "lane": "stg",
+      "row": 1,
+      "sub": "PK customer_id, email",
+      "glyph": "module",
+      "state": "added"
+    },
+    {
+      "id": "stg_products",
+      "title": "stg_products",
+      "lane": "stg",
+      "row": 2,
+      "sub": "PK product_id, name, category",
+      "glyph": "module",
+      "state": "added"
+    },
+    {
+      "id": "dim_customers",
+      "title": "dim_customers",
+      "lane": "dim",
+      "row": 1,
+      "sub": "PK customer_id, email, ...",
+      "glyph": "db",
+      "state": "added"
+    },
+    {
+      "id": "dim_products",
+      "title": "dim_products",
+      "lane": "dim",
+      "row": 2,
+      "sub": "PK product_id, name, category",
+      "glyph": "db",
+      "state": "added"
+    },
+    {
+      "id": "dim_dates",
+      "title": "dim_dates",
+      "lane": "dim",
+      "row": 3,
+      "sub": "generated, PK date_key, ...",
+      "glyph": "db",
+      "state": "added"
+    },
+    {
+      "id": "fct",
+      "title": "fct_order_items",
+      "lane": "fct",
+      "row": 0,
+      "sub": "PK order_id, store_id, ...",
+      "glyph": "db",
+      "state": "added"
+    },
+    {
+      "id": "agg_c",
+      "title": "agg_customer_totals",
+      "lane": "agg",
+      "row": 1,
+      "sub": "PK customer_id, date_key",
+      "glyph": "db",
+      "state": "added"
+    },
+    {
+      "id": "raw_stores",
+      "title": "raw.stores",
+      "lane": "raw",
+      "row": 3,
+      "sub": "PK id, region"
+    },
+    {
+      "id": "dim_stores",
+      "title": "dim_stores",
+      "lane": "dim",
+      "row": 4,
+      "sub": "PK store_id, region",
+      "glyph": "table"
+    }
+  ],
+  "edges": [
+    {
+      "from": "raw_orders",
+      "to": "stg_orders",
+      "label": "cast and rename"
+    },
+    {
+      "from": "raw_customers",
+      "to": "stg_customers",
+      "label": "rename"
+    },
+    {
+      "from": "raw_products",
+      "to": "stg_products",
+      "label": "rename"
+    },
+    {
+      "from": "stg_customers",
+      "to": "dim_customers",
+      "label": "build dimension"
+    },
+    {
+      "from": "stg_products",
+      "to": "dim_products",
+      "label": "build dimension"
+    },
+    {
+      "from": "stg_orders",
+      "to": "fct",
+      "label": "build facts"
+    },
+    {
+      "from": "dim_customers",
+      "to": "fct",
+      "label": "customer_id"
+    },
+    {
+      "from": "dim_products",
+      "to": "fct",
+      "label": "product_id"
+    },
+    {
+      "from": "dim_dates",
+      "to": "fct",
+      "label": "date_key"
+    },
+    {
+      "from": "fct",
+      "to": "agg_c",
+      "label": "sum"
+    },
+    {
+      "from": "raw_stores",
+      "to": "dim_stores",
+      "label": "rename"
+    },
+    {
+      "from": "dim_stores",
+      "to": "fct",
+      "label": "store_id"
+    }
+  ]
+}

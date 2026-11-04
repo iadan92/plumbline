@@ -6,7 +6,9 @@ Spec in short: participants (columns), phases (labelled bands) holding messages 
 Message kinds: sync (default), return, async, self, note. Activation bars, lifelines and arrow
 ends are computed from the message order, so the spec never states coordinates.
 """
-from render_diagram import MONO, SANS, THEMES, esc, glyph, rounded
+import copy
+
+from common import STATE_WORDS, build_theme, clean_path, esc, flatten, fonts, glyph, norm_state, packet, rounded
 
 BAR_W = 12
 BAR_SHIFT = 5          # nested activations step right by this much
@@ -65,28 +67,34 @@ def expand(spec, warnings):
     return out
 
 
-def render_sequence(spec, opt, args_theme, args_animate, out_path):
-    keys = ("theme", "animate", "x0", "gap", "numbers", "headers")
+def render_sequence(spec, theme, animate, at_time, palette, warnings):
+    """Draw a sequence spec; same return value as render_diagram.render()."""
+    from render_diagram import merge_palette
+    keys = ("theme", "animate", "x0", "gap", "numbers", "headers", "palette", "font", "mono", "diff_labels", "legend")
     opt = {"x0": 40, "gap": 190, "numbers": False, "headers": "top", "theme": "light", "animate": "none",
-           **{k: v for k, v in opt.items() if k in keys}}
-    if args_theme:
-        opt["theme"] = args_theme
-    if args_animate:
-        opt["animate"] = args_animate
-    T = THEMES[opt["theme"]]
+           "diff_labels": False, "legend": False,
+           **{k: v for k, v in spec.get("options", {}).items() if k in keys}}
+    if theme:
+        opt["theme"] = theme
+    if animate:
+        opt["animate"] = animate
+    T = build_theme(opt["theme"], merge_palette(palette, opt.get("palette")))
     P = T["states"]
-    warnings = []
+    SANS_F, MONO_F = fonts(opt)
+    spec = copy.deepcopy(spec)
 
     parts = [dict(p) for p in spec["participants"]]
     pidx = {p["id"]: i for i, p in enumerate(parts)}
     phases = expand(spec, warnings)
-    default_state = spec.get("state", "unchanged")
+    default_state = norm_state(spec.get("state")) or "unchanged"
     pre = 4 if opt["numbers"] else 0    # room for a "12. " call number in front of each label
 
     # participant card widths, then column centres wide enough for every label that crosses a gap
     for p in parts:
         p.setdefault("glyph", "service")
-        p.setdefault("state", "unchanged")
+        p["state"] = norm_state(p.get("state")) or "unchanged"
+        if p.get("icon"):
+            p["icon"] = clean_path(p["icon"], f"participant {p['id']}")
         p["w"] = int(max(150, min(280, max(len(p["title"]) * 7 + 80, len(p.get("sub", "")) * 5.9 + 66))))
     gaps = [max(opt["gap"], (parts[i]["w"] + parts[i + 1]["w"]) / 2 + 24) for i in range(len(parts) - 1)]
     msgs_all = [m for ph in phases for m in ph["messages"]]
@@ -141,7 +149,7 @@ def render_sequence(spec, opt, args_theme, args_animate, out_path):
                 y += 42
                 continue
             f, t = pidx[m["from"]], pidx[m["to"]]
-            st = m["st"] = m.get("state") or ph.get("state") or default_state
+            st = m["st"] = norm_state(m.get("state")) or norm_state(ph.get("state")) or default_state
             m["depth_from"] = len(stack[f])
             m["depth_to"] = len(stack[t])    # for a sync call: the level the new bar will sit on
             if kind == "sync":
@@ -162,7 +170,8 @@ def render_sequence(spec, opt, args_theme, args_animate, out_path):
         y += 2
         bands.append({"ph": ph, "top": band_top, "bottom": y, "head_y": head_y, "used": used})
         y += 16
-    total_h = int(y + 8)
+    legend_h = 30 if opt["legend"] else 0
+    total_h = int(y + 8) + legend_h
 
     def bar_cx(i, level):
         return cx[i] + BAR_SHIFT * level
@@ -198,7 +207,7 @@ def render_sequence(spec, opt, args_theme, args_animate, out_path):
     s = []
     add = s.append
     add(f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {total_w} {total_h}" width="{total_w}" height="{total_h}" '
-        f'role="img" aria-label="{esc(title)}" font-family="{SANS}">')
+        f'role="img" aria-label="{esc(title)}" font-family="{SANS_F}">')
     add(f'<title>{esc(title)}</title>')
     defs = [f'<pattern id="dots" width="18" height="18" patternUnits="userSpaceOnUse"><circle cx="1.5" cy="1.5" r="1" fill="{T["dots"]}"/></pattern>']
     for st in sorted({p["m"]["st"] for p in paths} | {"unchanged"}):
@@ -210,6 +219,14 @@ def render_sequence(spec, opt, args_theme, args_animate, out_path):
     add("<defs>" + "".join(defs) + "</defs>")
     add(f'<rect width="{total_w}" height="{total_h}" rx="12" fill="{T["bg"]}"/><rect width="{total_w}" height="{total_h}" rx="12" fill="url(#dots)"/>')
 
+    def badge(p, x, top):
+        word = STATE_WORDS[p["state"]]
+        bw = len(word) * 6 + 16
+        bx = x + p["w"] - bw - 12
+        return (f'<g><rect x="{bx:.1f}" y="{top - 8}" width="{bw}" height="16" rx="8" fill="{P[p["state"]][3]}" stroke="{T["pill_stroke"]}"/>'
+                f'<text x="{bx + bw / 2:.1f}" y="{top + 3}" text-anchor="middle" font-size="8.5" font-weight="700" letter-spacing=".06em" '
+                f'fill="{P[p["state"]][2]}">{word}</text></g>')
+
     def header(i, top):
         p = parts[i]
         x = cx[i] - p["w"] / 2
@@ -217,9 +234,10 @@ def render_sequence(spec, opt, args_theme, args_animate, out_path):
         sop = 1 if p["state"] == "unchanged" else P[p["state"]][1]
         add(f'<g filter="drop-shadow(0 1px 2px {T["shadow"]})"><rect x="{x:.1f}" y="{top}" width="{p["w"]}" height="{CARD_H}" rx="10" '
             f'fill="{T["card"]}" stroke="{stroke}" stroke-opacity="{sop}"/>'
-            f'<rect x="{x + 14:.1f}" y="{top + 18}" width="26" height="26" rx="7" fill="{T["chip"]}"/>{glyph(p["glyph"], x + 14, top + 18, T["glyph"])}'
+            f'<rect x="{x + 14:.1f}" y="{top + 18}" width="26" height="26" rx="7" fill="{T["chip"]}"/>{glyph(p["glyph"], x + 14, top + 18, T["glyph"], p.get("icon"))}'
             f'<text x="{x + 50:.1f}" y="{top + (27 if p.get("sub") else 35)}" font-size="11.5" font-weight="600" fill="{T["title"]}">{esc(p["title"])}</text>'
-            + (f'<text x="{x + 50:.1f}" y="{top + 45}" font-size="9.5" fill="{T["sub"]}" font-family="{MONO}">{esc(p["sub"])}</text>' if p.get("sub") else "")
+            + (f'<text x="{x + 50:.1f}" y="{top + 45}" font-size="9.5" fill="{T["sub"]}" font-family="{MONO_F}">{esc(p["sub"])}</text>' if p.get("sub") else "")
+            + (badge(p, x, top) if opt["diff_labels"] and p["state"] in STATE_WORDS else "")
             + '</g>')
 
     # phase bands with titles
@@ -259,7 +277,7 @@ def render_sequence(spec, opt, args_theme, args_animate, out_path):
     life = f'stroke="{T["sep"]}" stroke-width="1.2" stroke-dasharray="4 4"'
     if head_top:
         for i in range(len(parts)):
-            add(f'<path d="M{cx[i]:.1f},{24 + CARD_H} V{total_h - 16}" {life}/>')
+            add(f'<path d="M{cx[i]:.1f},{24 + CARD_H} V{total_h - legend_h - 16}" {life}/>')
             header(i, 24)
     else:
         for b in bands:
@@ -287,6 +305,8 @@ def render_sequence(spec, opt, args_theme, args_animate, out_path):
     for p in paths:
         m = p["m"]
         dash = ' stroke-dasharray="5 4"' if m["kind"] == "return" else ""
+        if m["st"] == "removed" and opt["diff_labels"]:
+            dash = ' stroke-dasharray="2 4"'
         mk = f'mo-{m["st"]}' if m["kind"] == "async" else f'mk-{m["st"]}'
         add(f'<path d="{rounded(p["pts"], 6)}" marker-end="url(#{mk})" fill="none" stroke="{P[m["st"]][0]}" stroke-width="1.5"{dash}/>')
 
@@ -295,7 +315,7 @@ def render_sequence(spec, opt, args_theme, args_animate, out_path):
     for p in paths:
         m = p["m"]
         text = m.get("label", "")
-        if opt["numbers"] and m["kind"] != "return":
+        if opt["numbers"] and m["kind"] != "return" and not (opt["diff_labels"] and m["st"] == "removed"):   # a removed call is not in this version
             n_call += 1
             text = f"{n_call}. {text}"
         if not text:
@@ -306,23 +326,33 @@ def render_sequence(spec, opt, args_theme, args_animate, out_path):
             f'<text x="{px:.1f}" y="{py + 3.2:.1f}" text-anchor="middle" font-size="9" font-weight="600" fill="{P[m["st"]][2]}">{esc(text)}</text></g>')
 
     # packets: one dot per message, played in message order
+    loop = None
     if opt["animate"] == "packets" and paths:
         dur = len(paths) * STEP_SECONDS + PAUSE_SECONDS
         fade = 0.06 / dur
+        loop = dur
         for k, p in enumerate(paths):
             t0 = k * STEP_SECONDS / dur
             t1 = (k * STEP_SECONDS + TRAVEL_SECONDS) / dur
+            if at_time is not None:
+                at = packet(flatten(p["pts"], 6), at_time, dur, t0, t1, fade)
+                if at:
+                    add(f'<circle cx="{at[0]:.1f}" cy="{at[1]:.1f}" r="3.6" fill="{P[p["m"]["st"]][0]}" stroke="{T["packet_ring"]}" '
+                        f'stroke-width="1.4" opacity="{at[2]:.2f}"/>')
+                continue
             add(f'<circle r="3.6" fill="{P[p["m"]["st"]][0]}" stroke="{T["packet_ring"]}" stroke-width="1.4" opacity="0">'
                 f'<animateMotion dur="{dur:.2f}s" repeatCount="indefinite" keyPoints="0;0;1;1" keyTimes="0;{t0:.4f};{t1:.4f};1" '
                 f'calcMode="linear" path="{rounded(p["pts"], 6)}"/>'
                 f'<animate attributeName="opacity" dur="{dur:.2f}s" repeatCount="indefinite" values="0;0;1;1;0;0" '
                 f'keyTimes="0;{t0:.4f};{t0 + fade:.4f};{max(t1 - fade, t0 + fade):.4f};{t1:.4f};1"/></circle>')
 
+    if opt["legend"]:
+        from render_diagram import legend
+        add(legend([pt["state"] for pt in parts] + [pa["m"]["st"] for pa in paths if pa["m"]["kind"] != "return"],
+                   T, total_w, total_h - 30))
     add('</svg>')
-    open(out_path, "w").write("\n".join(s))
-    print(f"wrote {out_path} ({total_w}x{total_h}, theme={opt['theme']}, animate={opt['animate']}, "
-          f"{len(parts)} participants, {len(paths)} messages)")
-    for w_ in sorted(set(warnings)):
-        print("WARNING:", w_)
+    notes = []
     if total_w > 1800:
-        print(f"NOTE: {total_w}px wide; slides and READMEs shrink it. Lower options.gap or use fewer participants per diagram.")
+        notes.append(f"{total_w}px wide; slides and READMEs shrink it. Lower options.gap or use fewer participants per diagram.")
+    return {"svg": "\n".join(s), "width": total_w, "height": total_h, "warnings": sorted(set(warnings)), "notes": notes,
+            "loop": loop, "spec": spec, "theme": opt["theme"], "animate": opt["animate"]}

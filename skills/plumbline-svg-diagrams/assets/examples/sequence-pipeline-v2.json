@@ -1,0 +1,149 @@
+{
+  "type": "sequence",
+  "title": "Nightly pipeline, three phases (v2)",
+  "options": {
+    "numbers": true
+  },
+  "participants": [
+    {
+      "id": "dagster",
+      "title": "Dagster",
+      "sub": "assets and daily schedule",
+      "glyph": "service"
+    },
+    {
+      "id": "dlt",
+      "title": "dlt pipeline",
+      "sub": "REST source, incremental",
+      "glyph": "module"
+    },
+    {
+      "id": "api",
+      "title": "Shop REST API",
+      "sub": "orders, customers, payments",
+      "glyph": "service"
+    },
+    {
+      "id": "raw",
+      "title": "raw schema",
+      "sub": "DuckDB",
+      "glyph": "db"
+    },
+    {
+      "id": "dbt",
+      "title": "dbt",
+      "sub": "staging and marts",
+      "glyph": "module"
+    },
+    {
+      "id": "evidence",
+      "title": "Evidence",
+      "sub": "dashboard",
+      "glyph": "ui"
+    }
+  ],
+  "phases": [
+    {
+      "id": "extract",
+      "title": "1. Extract and load",
+      "sub": "dlt pulls pages and merges into raw",
+      "messages": [
+        {
+          "id": "run",
+          "from": "dagster",
+          "to": "dlt",
+          "label": "run extract asset"
+        },
+        {
+          "id": "page",
+          "from": "dlt",
+          "to": "api",
+          "label": "GET /orders",
+          "reply": "200 OrderPage"
+        },
+        {
+          "id": "merge",
+          "from": "dlt",
+          "to": "raw",
+          "label": "merge into raw.orders",
+          "reply": "rows merged"
+        },
+        {
+          "from": "dlt",
+          "to": "dagster",
+          "kind": "return",
+          "label": "extract succeeded"
+        }
+      ]
+    },
+    {
+      "id": "transform",
+      "title": "2. Transform and test",
+      "sub": "dbt builds models, tests every layer",
+      "messages": [
+        {
+          "from": "dagster",
+          "to": "dbt",
+          "label": "dbt build --target prod"
+        },
+        {
+          "from": "dbt",
+          "to": "raw",
+          "label": "read raw tables",
+          "reply": "rows"
+        },
+        {
+          "kind": "note",
+          "over": [
+            "dbt",
+            "raw"
+          ],
+          "label": "tests: not_null, unique, relationships"
+        },
+        {
+          "from": "dbt",
+          "to": "dagster",
+          "kind": "return",
+          "label": "build succeeded"
+        }
+      ]
+    },
+    {
+      "id": "serve",
+      "title": "3. Serve",
+      "sub": "Evidence reads the marts",
+      "messages": [
+        {
+          "from": "dagster",
+          "to": "evidence",
+          "label": "build site"
+        },
+        {
+          "from": "evidence",
+          "to": "dbt",
+          "label": "check freshness",
+          "reply": "fresh"
+        },
+        {
+          "from": "evidence",
+          "to": "raw",
+          "kind": "async",
+          "label": "revenue by day"
+        },
+        {
+          "from": "evidence",
+          "to": "dagster",
+          "kind": "return",
+          "label": "site built"
+        }
+      ]
+    }
+  ],
+  "frames": [
+    {
+      "label": "loop: each page",
+      "from": "page",
+      "to": "page:reply"
+    }
+  ]
+}

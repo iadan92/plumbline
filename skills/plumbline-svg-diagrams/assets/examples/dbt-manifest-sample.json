@@ -1,0 +1,706 @@
+{
+ "metadata": {
+  "dbt_schema_version": "https://schemas.getdbt.com/dbt/manifest/v12.json"
+ },
+ "nodes": {
+  "seed.shop.country_codes": {
+   "unique_id": "seed.shop.country_codes",
+   "resource_type": "seed",
+   "name": "country_codes",
+   "path": "country_codes.csv",
+   "original_file_path": "seeds/country_codes.csv",
+   "schema": "analytics",
+   "config": {
+    "materialized": "seed",
+    "enabled": true
+   },
+   "tags": [],
+   "columns": {},
+   "depends_on": {
+    "nodes": []
+   }
+  },
+  "model.shop.stg_orders": {
+   "unique_id": "model.shop.stg_orders",
+   "resource_type": "model",
+   "name": "stg_orders",
+   "package_name": "shop",
+   "path": "staging/shop/stg_orders.sql",
+   "original_file_path": "models/staging/shop/stg_orders.sql",
+   "fqn": [
+    "shop",
+    "staging",
+    "shop",
+    "stg_orders"
+   ],
+   "schema": "staging",
+   "tags": [],
+   "config": {
+    "materialized": "view",
+    "enabled": true,
+    "tags": []
+   },
+   "columns": {
+    "order_id": {
+     "name": "order_id",
+     "data_type": "integer"
+    },
+    "customer_id": {
+     "name": "customer_id",
+     "data_type": "integer"
+    },
+    "ordered_at": {
+     "name": "ordered_at",
+     "data_type": "timestamp"
+    },
+    "status": {
+     "name": "status",
+     "data_type": "varchar"
+    }
+   },
+   "depends_on": {
+    "nodes": [
+     "source.shop.shop.orders"
+    ]
+   }
+  },
+  "model.shop.stg_customers": {
+   "unique_id": "model.shop.stg_customers",
+   "resource_type": "model",
+   "name": "stg_customers",
+   "package_name": "shop",
+   "path": "staging/shop/stg_customers.sql",
+   "original_file_path": "models/staging/shop/stg_customers.sql",
+   "fqn": [
+    "shop",
+    "staging",
+    "shop",
+    "stg_customers"
+   ],
+   "schema": "staging",
+   "tags": [],
+   "config": {
+    "materialized": "view",
+    "enabled": true,
+    "tags": []
+   },
+   "columns": {
+    "customer_id": {
+     "name": "customer_id",
+     "data_type": "integer"
+    },
+    "email": {
+     "name": "email",
+     "data_type": "varchar"
+    }
+   },
+   "depends_on": {
+    "nodes": [
+     "source.shop.shop.customers"
+    ]
+   }
+  },
+  "model.shop.stg_payments": {
+   "unique_id": "model.shop.stg_payments",
+   "resource_type": "model",
+   "name": "stg_payments",
+   "package_name": "shop",
+   "path": "staging/shop/stg_payments.sql",
+   "original_file_path": "models/staging/shop/stg_payments.sql",
+   "fqn": [
+    "shop",
+    "staging",
+    "shop",
+    "stg_payments"
+   ],
+   "schema": "staging",
+   "tags": [],
+   "config": {
+    "materialized": "view",
+    "enabled": true,
+    "tags": []
+   },
+   "columns": {
+    "payment_id": {
+     "name": "payment_id",
+     "data_type": "integer"
+    },
+    "order_id": {
+     "name": "order_id",
+     "data_type": "integer"
+    },
+    "amount": {
+     "name": "amount",
+     "data_type": "numeric"
+    }
+   },
+   "depends_on": {
+    "nodes": [
+     "source.shop.shop.payments"
+    ]
+   }
+  },
+  "model.shop.stg_products": {
+   "unique_id": "model.shop.stg_products",
+   "resource_type": "model",
+   "name": "stg_products",
+   "package_name": "shop",
+   "path": "staging/shop/stg_products.sql",
+   "original_file_path": "models/staging/shop/stg_products.sql",
+   "fqn": [
+    "shop",
+    "staging",
+    "shop",
+    "stg_products"
+   ],
+   "schema": "staging",
+   "tags": [],
+   "config": {
+    "materialized": "view",
+    "enabled": true,
+    "tags": []
+   },
+   "columns": {
+    "product_id": {
+     "name": "product_id",
+     "data_type": "integer"
+    },
+    "name": {
+     "name": "name",
+     "data_type": "varchar"
+    }
+   },
+   "depends_on": {
+    "nodes": [
+     "source.shop.shop.products"
+    ]
+   }
+  },
+  "model.shop.stg_accounts": {
+   "unique_id": "model.shop.stg_accounts",
+   "resource_type": "model",
+   "name": "stg_accounts",
+   "package_name": "shop",
+   "path": "staging/crm/stg_accounts.sql",
+   "original_file_path": "models/staging/crm/stg_accounts.sql",
+   "fqn": [
+    "shop",
+    "staging",
+    "crm",
+    "stg_accounts"
+   ],
+   "schema": "staging",
+   "tags": [],
+   "config": {
+    "materialized": "view",
+    "enabled": true,
+    "tags": []
+   },
+   "columns": {
+    "account_id": {
+     "name": "account_id",
+     "data_type": "integer"
+    },
+    "segment": {
+     "name": "segment",
+     "data_type": "varchar"
+    }
+   },
+   "depends_on": {
+    "nodes": [
+     "source.shop.crm.accounts"
+    ]
+   }
+  },
+  "model.shop.int_order_payments": {
+   "unique_id": "model.shop.int_order_payments",
+   "resource_type": "model",
+   "name": "int_order_payments",
+   "package_name": "shop",
+   "path": "intermediate/int_order_payments.sql",
+   "original_file_path": "models/intermediate/int_order_payments.sql",
+   "fqn": [
+    "shop",
+    "intermediate",
+    "int_order_payments"
+   ],
+   "schema": "intermediate",
+   "tags": [],
+   "config": {
+    "materialized": "ephemeral",
+    "enabled": true,
+    "tags": []
+   },
+   "columns": {},
+   "depends_on": {
+    "nodes": [
+     "model.shop.stg_orders",
+     "model.shop.stg_payments"
+    ]
+   }
+  },
+  "model.shop.dim_customers": {
+   "unique_id": "model.shop.dim_customers",
+   "resource_type": "model",
+   "name": "dim_customers",
+   "package_name": "shop",
+   "path": "marts/core/dim_customers.sql",
+   "original_file_path": "models/marts/core/dim_customers.sql",
+   "fqn": [
+    "shop",
+    "marts",
+    "core",
+    "dim_customers"
+   ],
+   "schema": "marts",
+   "tags": [
+    "core"
+   ],
+   "config": {
+    "materialized": "table",
+    "enabled": true,
+    "tags": [
+     "core"
+    ]
+   },
+   "columns": {
+    "customer_id": {
+     "name": "customer_id",
+     "data_type": "integer"
+    },
+    "email": {
+     "name": "email",
+     "data_type": "varchar"
+    },
+    "segment": {
+     "name": "segment",
+     "data_type": "varchar"
+    }
+   },
+   "depends_on": {
+    "nodes": [
+     "model.shop.stg_customers",
+     "model.shop.stg_accounts",
+     "seed.shop.country_codes"
+    ]
+   }
+  },
+  "model.shop.dim_products": {
+   "unique_id": "model.shop.dim_products",
+   "resource_type": "model",
+   "name": "dim_products",
+   "package_name": "shop",
+   "path": "marts/core/dim_products.sql",
+   "original_file_path": "models/marts/core/dim_products.sql",
+   "fqn": [
+    "shop",
+    "marts",
+    "core",
+    "dim_products"
+   ],
+   "schema": "marts",
+   "tags": [
+    "core"
+   ],
+   "config": {
+    "materialized": "table",
+    "enabled": true,
+    "tags": [
+     "core"
+    ]
+   },
+   "columns": {
+    "product_id": {
+     "name": "product_id",
+     "data_type": "integer"
+    },
+    "name": {
+     "name": "name",
+     "data_type": "varchar"
+    }
+   },
+   "depends_on": {
+    "nodes": [
+     "model.shop.stg_products"
+    ]
+   }
+  },
+  "model.shop.fct_orders": {
+   "unique_id": "model.shop.fct_orders",
+   "resource_type": "model",
+   "name": "fct_orders",
+   "package_name": "shop",
+   "path": "marts/core/fct_orders.sql",
+   "original_file_path": "models/marts/core/fct_orders.sql",
+   "fqn": [
+    "shop",
+    "marts",
+    "core",
+    "fct_orders"
+   ],
+   "schema": "marts",
+   "tags": [
+    "core",
+    "finance"
+   ],
+   "config": {
+    "materialized": "incremental",
+    "enabled": true,
+    "tags": [
+     "core",
+     "finance"
+    ]
+   },
+   "columns": {
+    "order_id": {
+     "name": "order_id",
+     "data_type": "integer"
+    },
+    "customer_id": {
+     "name": "customer_id",
+     "data_type": "integer"
+    },
+    "amount": {
+     "name": "amount",
+     "data_type": "numeric"
+    },
+    "ordered_at": {
+     "name": "ordered_at",
+     "data_type": "timestamp"
+    }
+   },
+   "depends_on": {
+    "nodes": [
+     "model.shop.int_order_payments",
+     "model.shop.dim_customers"
+    ]
+   }
+  },
+  "model.shop.agg_daily_revenue": {
+   "unique_id": "model.shop.agg_daily_revenue",
+   "resource_type": "model",
+   "name": "agg_daily_revenue",
+   "package_name": "shop",
+   "path": "marts/finance/agg_daily_revenue.sql",
+   "original_file_path": "models/marts/finance/agg_daily_revenue.sql",
+   "fqn": [
+    "shop",
+    "marts",
+    "finance",
+    "agg_daily_revenue"
+   ],
+   "schema": "marts",
+   "tags": [
+    "finance"
+   ],
+   "config": {
+    "materialized": "table",
+    "enabled": true,
+    "tags": [
+     "finance"
+    ]
+   },
+   "columns": {
+    "order_date": {
+     "name": "order_date",
+     "data_type": "date"
+    },
+    "revenue": {
+     "name": "revenue",
+     "data_type": "numeric"
+    }
+   },
+   "depends_on": {
+    "nodes": [
+     "model.shop.fct_orders"
+    ]
+   }
+  },
+  "model.shop.legacy_report": {
+   "unique_id": "model.shop.legacy_report",
+   "resource_type": "model",
+   "name": "legacy_report",
+   "package_name": "shop",
+   "path": "marts/legacy/legacy_report.sql",
+   "original_file_path": "models/marts/legacy/legacy_report.sql",
+   "fqn": [
+    "shop",
+    "marts",
+    "legacy",
+    "legacy_report"
+   ],
+   "schema": "marts",
+   "tags": [
+    "legacy"
+   ],
+   "config": {
+    "materialized": "view",
+    "enabled": true,
+    "tags": [
+     "legacy"
+    ]
+   },
+   "columns": {},
+   "depends_on": {
+    "nodes": [
+     "model.shop.fct_orders"
+    ]
+   }
+  },
+  "test.shop.unique_fct_orders_order_id": {
+   "unique_id": "test.shop.unique_fct_orders_order_id",
+   "resource_type": "test",
+   "name": "unique_fct_orders_order_id",
+   "column_name": "order_id",
+   "test_metadata": {
+    "name": "unique",
+    "kwargs": {}
+   },
+   "depends_on": {
+    "nodes": [
+     "model.shop.fct_orders"
+    ]
+   },
+   "config": {
+    "enabled": true
+   }
+  },
+  "test.shop.not_null_fct_orders_order_id": {
+   "unique_id": "test.shop.not_null_fct_orders_order_id",
+   "resource_type": "test",
+   "name": "not_null_fct_orders_order_id",
+   "column_name": "order_id",
+   "test_metadata": {
+    "name": "not_null",
+    "kwargs": {}
+   },
+   "depends_on": {
+    "nodes": [
+     "model.shop.fct_orders"
+    ]
+   },
+   "config": {
+    "enabled": true
+   }
+  },
+  "test.shop.relationships_fct_orders_customer_id": {
+   "unique_id": "test.shop.relationships_fct_orders_customer_id",
+   "resource_type": "test",
+   "name": "relationships_fct_orders_customer_id",
+   "column_name": "customer_id",
+   "test_metadata": {
+    "name": "relationships",
+    "kwargs": {
+     "to": "ref('dim_customers')",
+     "field": "customer_id"
+    }
+   },
+   "depends_on": {
+    "nodes": [
+     "model.shop.fct_orders"
+    ]
+   },
+   "config": {
+    "enabled": true
+   }
+  },
+  "test.shop.unique_dim_customers_customer_id": {
+   "unique_id": "test.shop.unique_dim_customers_customer_id",
+   "resource_type": "test",
+   "name": "unique_dim_customers_customer_id",
+   "column_name": "customer_id",
+   "test_metadata": {
+    "name": "unique",
+    "kwargs": {}
+   },
+   "depends_on": {
+    "nodes": [
+     "model.shop.dim_customers"
+    ]
+   },
+   "config": {
+    "enabled": true
+   }
+  },
+  "test.shop.not_null_dim_customers_customer_id": {
+   "unique_id": "test.shop.not_null_dim_customers_customer_id",
+   "resource_type": "test",
+   "name": "not_null_dim_customers_customer_id",
+   "column_name": "customer_id",
+   "test_metadata": {
+    "name": "not_null",
+    "kwargs": {}
+   },
+   "depends_on": {
+    "nodes": [
+     "model.shop.dim_customers"
+    ]
+   },
+   "config": {
+    "enabled": true
+   }
+  },
+  "test.shop.unique_dim_products_product_id": {
+   "unique_id": "test.shop.unique_dim_products_product_id",
+   "resource_type": "test",
+   "name": "unique_dim_products_product_id",
+   "column_name": "product_id",
+   "test_metadata": {
+    "name": "unique",
+    "kwargs": {}
+   },
+   "depends_on": {
+    "nodes": [
+     "model.shop.dim_products"
+    ]
+   },
+   "config": {
+    "enabled": true
+   }
+  },
+  "test.shop.not_null_dim_products_product_id": {
+   "unique_id": "test.shop.not_null_dim_products_product_id",
+   "resource_type": "test",
+   "name": "not_null_dim_products_product_id",
+   "column_name": "product_id",
+   "test_metadata": {
+    "name": "not_null",
+    "kwargs": {}
+   },
+   "depends_on": {
+    "nodes": [
+     "model.shop.dim_products"
+    ]
+   },
+   "config": {
+    "enabled": true
+   }
+  }
+ },
+ "sources": {
+  "source.shop.shop.orders": {
+   "unique_id": "source.shop.shop.orders",
+   "resource_type": "source",
+   "source_name": "shop",
+   "name": "orders",
+   "schema": "raw",
+   "tags": [],
+   "columns": {
+    "id": {
+     "name": "id",
+     "data_type": "integer"
+    },
+    "customer_id": {
+     "name": "customer_id",
+     "data_type": "integer"
+    },
+    "ordered_at": {
+     "name": "ordered_at",
+     "data_type": "timestamp"
+    },
+    "status": {
+     "name": "status",
+     "data_type": "varchar"
+    }
+   }
+  },
+  "source.shop.shop.customers": {
+   "unique_id": "source.shop.shop.customers",
+   "resource_type": "source",
+   "source_name": "shop",
+   "name": "customers",
+   "schema": "raw",
+   "tags": [],
+   "columns": {
+    "id": {
+     "name": "id",
+     "data_type": "integer"
+    },
+    "email": {
+     "name": "email",
+     "data_type": "varchar"
+    },
+    "created_at": {
+     "name": "created_at",
+     "data_type": "timestamp"
+    }
+   }
+  },
+  "source.shop.shop.payments": {
+   "unique_id": "source.shop.shop.payments",
+   "resource_type": "source",
+   "source_name": "shop",
+   "name": "payments",
+   "schema": "raw",
+   "tags": [],
+   "columns": {
+    "id": {
+     "name": "id",
+     "data_type": "integer"
+    },
+    "order_id": {
+     "name": "order_id",
+     "data_type": "integer"
+    },
+    "amount": {
+     "name": "amount",
+     "data_type": "numeric"
+    }
+   }
+  },
+  "source.shop.shop.products": {
+   "unique_id": "source.shop.shop.products",
+   "resource_type": "source",
+   "source_name": "shop",
+   "name": "products",
+   "schema": "raw",
+   "tags": [],
+   "columns": {
+    "id": {
+     "name": "id",
+     "data_type": "integer"
+    },
+    "name": {
+     "name": "name",
+     "data_type": "varchar"
+    },
+    "category": {
+     "name": "category",
+     "data_type": "varchar"
+    }
+   }
+  },
+  "source.shop.crm.accounts": {
+   "unique_id": "source.shop.crm.accounts",
+   "resource_type": "source",
+   "source_name": "crm",
+   "name": "accounts",
+   "schema": "raw",
+   "tags": [],
+   "columns": {
+    "account_id": {
+     "name": "account_id",
+     "data_type": "integer"
+    },
+    "segment": {
+     "name": "segment",
+     "data_type": "varchar"
+    }
+   }
+  }
+ },
+ "exposures": {
+  "exposure.shop.revenue_dashboard": {
+   "unique_id": "exposure.shop.revenue_dashboard",
+   "resource_type": "exposure",
+   "name": "revenue_dashboard",
+   "type": "dashboard",
+   "depends_on": {
+    "nodes": [
+     "model.shop.agg_daily_revenue",
+     "model.shop.dim_products"
+    ]
+   }
+  }
+ }
+}

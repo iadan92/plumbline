@@ -1,0 +1,120 @@
+{
+  "title": "Lanes named, rows automatic, two rows pinned",
+  "options": {
+    "fit_width": 1700
+  },
+  "nodes": [
+    {
+      "id": "raw_orders",
+      "title": "raw.orders",
+      "lane": "raw"
+    },
+    {
+      "id": "raw_customers",
+      "title": "raw.customers",
+      "lane": "raw"
+    },
+    {
+      "id": "raw_payments",
+      "title": "raw.payments",
+      "lane": "raw",
+      "row": 0
+    },
+    {
+      "id": "stg_orders",
+      "title": "stg_orders",
+      "lane": "staging"
+    },
+    {
+      "id": "stg_customers",
+      "title": "stg_customers",
+      "lane": "staging"
+    },
+    {
+      "id": "stg_payments",
+      "title": "stg_payments",
+      "lane": "staging",
+      "row": 0
+    },
+    {
+      "id": "dim_customers",
+      "title": "dim_customers",
+      "lane": "marts"
+    },
+    {
+      "id": "fct_orders",
+      "title": "fct_orders",
+      "lane": "marts"
+    },
+    {
+      "id": "agg_daily_revenue",
+      "title": "agg_daily_revenue",
+      "lane": "aggregates"
+    },
+    {
+      "id": "revenue_dashboard",
+      "title": "Revenue dashboard",
+      "lane": "dashboards"
+    }
+  ],
+  "edges": [
+    {
+      "from": "raw_orders",
+      "to": "stg_orders"
+    },
+    {
+      "from": "raw_customers",
+      "to": "stg_customers"
+    },
+    {
+      "from": "raw_payments",
+      "to": "stg_payments"
+    },
+    {
+      "from": "stg_customers",
+      "to": "dim_customers"
+    },
+    {
+      "from": "stg_orders",
+      "to": "fct_orders"
+    },
+    {
+      "from": "stg_payments",
+      "to": "fct_orders"
+    },
+    {
+      "from": "dim_customers",
+      "to": "fct_orders"
+    },
+    {
+      "from": "fct_orders",
+      "to": "agg_daily_revenue"
+    },
+    {
+      "from": "agg_daily_revenue",
+      "to": "revenue_dashboard"
+    }
+  ],
+  "lanes": [
+    {
+      "id": "raw",
+      "label": "raw"
+    },
+    {
+      "id": "staging",
+      "label": "staging"
+    },
+    {
+      "id": "marts",
+      "label": "marts"
+    },
+    {
+      "id": "aggregates",
+      "label": "aggregates"
+    },
+    {
+      "id": "dashboards",
+      "label": "dashboards"
+    }
+  ]
+}

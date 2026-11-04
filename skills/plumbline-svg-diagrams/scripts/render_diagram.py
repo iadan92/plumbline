@@ -1,106 +1,28 @@
 #!/usr/bin/env python3
 """Render a hand-laid SVG diagram in the PR Lens visual style from a JSON spec.
 
-Usage: render_diagram.py spec.json out.svg [--theme light|dark] [--animate none|packets|dashes]
+Usage: render_diagram.py spec.json out.svg [--theme light|dark|print] [--animate none|packets|dashes]
+                         [--theme-file brand.json] [--resolve resolved.json] [--validate]
 
 Why this exists: PR Lens lays nodes out itself (two per row, staggered, lines routed
 over the top). This script puts every node exactly where the spec says, so stage
-columns, chain rows and line routes stay predictable. See SKILL.md for the spec.
+columns, chain rows and line routes stay predictable. Nodes without a lane or row are placed
+automatically, and anything the spec does pin stays where it is. See SKILL.md for the spec.
 """
 import argparse
-import html
+import copy
 import itertools
 import json
 import os
 import sys
 
-MONO = 'ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace'
-SANS = '-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;Noto Sans&quot;, Helvetica, Arial, sans-serif'
-
-# state -> (line color, card stroke opacity, pill text, badge fill)
-THEMES = {
-    "light": {
-        "bg": "#f4f5f7", "dots": "rgba(140,149,159,.5)", "lane": "rgba(255,255,255,.55)",
-        "lane_label": "#59636e", "lane_sub": "#8c959f", "card": "#ffffff", "card_stroke": "#d0d7de",
-        "chip": "#f1f3f5", "glyph": "#59636e", "title": "#1f2328", "sub": "#59636e",
-        "colname": "#1a7f37", "coltype": "#59636e", "sep": "#d8dee4", "pill": "#ffffff",
-        "pill_stroke": "#d1d9e0", "shadow": "rgba(31,35,40,.14)", "packet_ring": "#ffffff",
-        "group_fill": ["rgba(31,35,40,.035)", "rgba(31,35,40,.055)", "rgba(31,35,40,.08)"],
-        "group_stroke": "#c7ced6", "group_title": "#59636e",
-        "states": {
-            "added": ("#1f883d", 0.55, "#116329", "#b9f0c4"),
-            "modified": ("#bf8700", 0.55, "#7d4e00", "#fff1b8"),
-            "removed": ("#cf222e", 0.55, "#82071e", "#ffd1d4"),
-            "unchanged": ("#8c959f", 1.0, "#59636e", "#f1f3f5"),
-        },
-    },
-    "dark": {
-        "bg": "#0d1117", "dots": "rgba(110,118,129,.18)", "lane": "rgba(110,118,129,.07)",
-        "lane_label": "#9198a1", "lane_sub": "#6e7681", "card": "#1c2128", "card_stroke": "#3d444d",
-        "chip": "rgba(110,118,129,.22)", "glyph": "#9198a1", "title": "#e6edf3", "sub": "#9198a1",
-        "colname": "#3fb950", "coltype": "#9198a1", "sep": "#30363d", "pill": "#1c2128",
-        "pill_stroke": "#3d444d", "shadow": "rgba(0,0,0,.28)", "packet_ring": "#0d1117",
-        "group_fill": ["rgba(255,255,255,.03)", "rgba(255,255,255,.05)", "rgba(255,255,255,.07)"],
-        "group_stroke": "#3d444d", "group_title": "#9198a1",
-        "states": {
-            "added": ("#3fb950", 0.4, "#3fb950", "rgba(46,160,67,.15)"),
-            "modified": ("#d29922", 0.4, "#d29922", "rgba(187,128,9,.15)"),
-            "removed": ("#f85149", 0.4, "#f85149", "rgba(248,81,73,.12)"),
-            "unchanged": ("#6e7681", 1.0, "#9198a1", "rgba(110,118,129,.22)"),
-        },
-    },
-}
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))   # sibling modules; python -I drops this entry
+from common import (MONO, THEMES, STATE_WORDS, build_theme, clean_path, esc, flatten, fonts,  # noqa: E402
+                    glyph, infer_glyph, norm_state, packet, rounded)
+from layout_auto import auto_layout, needs_layout  # noqa: E402
+from spec_check import check  # noqa: E402
 
 STEP_SECONDS, TRAVEL_SECONDS, PAUSE_SECONDS = 1.6, 1.1, 1.6
-
-
-def esc(s):
-    return html.escape(str(s), quote=False)
-
-
-def glyph(kind, x, y, color):
-    """Icon inside a 26x26 chip whose top-left corner is (x, y)."""
-    s = f'stroke="{color}" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"'
-    cx, cy = x + 13, y + 13
-    if kind == "db":
-        return (f'<ellipse {s} cx="{cx}" cy="{cy - 4.5}" rx="6.5" ry="2.6"/>'
-                f'<path {s} d="M{cx - 6.5},{cy - 4.5} v9 a6.5,2.6 0 0 0 13 0 v-9"/>')
-    if kind == "module":
-        return (f'<text x="{cx}" y="{cy + 4}" text-anchor="middle" font-size="11" font-weight="600" fill="{color}" '
-                f'font-family="{MONO}">{{ }}</text>')
-    if kind == "table":
-        return (f'<rect {s} x="{cx - 6.5}" y="{cy - 6}" width="13" height="12" rx="2"/>'
-                f'<path {s} d="M{cx - 6.5},{cy - 1.5} h13 M{cx - 1},{cy - 1.5} v7.5"/>')
-    if kind == "service":
-        return (f'<rect {s} x="{cx - 6.5}" y="{cy - 6.5}" width="13" height="13" rx="3"/>'
-                f'<circle {s} cx="{cx}" cy="{cy}" r="2"/>')
-    if kind == "ui":
-        return (f'<rect {s} x="{cx - 7}" y="{cy - 6}" width="14" height="12" rx="2"/>'
-                f'<path {s} d="M{cx - 7},{cy - 2} h14"/>')
-    if kind == "queue":
-        return f'<path {s} d="M{cx - 6},{cy - 4} h12 M{cx - 6},{cy} h12 M{cx - 6},{cy + 4} h12"/>'
-    if kind == "file":
-        return f'<path {s} d="M{cx - 5},{cy - 7} h7 l3,3 v11 h-10 z M{cx + 2},{cy - 7} v3 h3"/>'
-    return ""
-
-
-def rounded(points, r=8):
-    """Orthogonal polyline with rounded corners."""
-    d = [f"M{points[0][0]:.1f},{points[0][1]:.1f}"]
-    for i in range(1, len(points) - 1):
-        (x0, y0), (x1, y1), (x2, y2) = points[i - 1], points[i], points[i + 1]
-
-        def toward(ax, ay, bx, by):
-            dx, dy = bx - ax, by - ay
-            ln = (dx * dx + dy * dy) ** 0.5 or 1
-            k = min(r, ln / 2) / ln
-            return ax + dx * k, ay + dy * k
-
-        sx, sy = toward(x1, y1, x0, y0)
-        ex, ey = toward(x1, y1, x2, y2)
-        d.append(f"L{sx:.1f},{sy:.1f} Q{x1:.1f},{y1:.1f} {ex:.1f},{ey:.1f}")
-    d.append(f"L{points[-1][0]:.1f},{points[-1][1]:.1f}")
-    return " ".join(d)
 
 
 def simplify(points):
@@ -273,48 +195,94 @@ def _crossings(pa, pb):
     return n
 
 
-def main():
-    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("spec")
-    ap.add_argument("out")
-    ap.add_argument("--theme", choices=THEMES)
-    ap.add_argument("--animate", choices=["none", "packets", "dashes"])
-    args = ap.parse_args()
+def merge_palette(*layers):
+    """Overlay palettes left to right; `states` merge state by state instead of replacing each other."""
+    out = {}
+    for layer in layers:
+        for k, v in (layer or {}).items():
+            if k == "states":
+                out["states"] = {**out.get("states", {}), **v}
+            else:
+                out[k] = v
+    return out
 
-    spec = json.load(open(args.spec))
+
+def fit_widths(opt, lane_count, edges, warnings):
+    """Shrink card_w and gap until `lane_count` lanes fit options.fit_width; labels keep room to sit on their line."""
+    n = lane_count
+    total = lambda c, g: 2 * opt["x0"] + n * c + (n - 1) * g + 2 * opt["lane_pad"] - 20   # noqa: E731
+    if n < 2 or total(opt["card_w"], opt["gap"]) <= opt["fit_width"]:
+        return
+    need = max([len(e.get("label", "")) * 5.9 + 16 + 30 for e in edges] + [90])
+    card, gap = opt["card_w"], opt["gap"]
+    avail = opt["fit_width"] - 2 * opt["x0"] - 2 * opt["lane_pad"] + 20
+    gap = (avail - n * card) / (n - 1)
+    if gap < need:
+        card = max(170, (avail - (n - 1) * need) / n)
+        gap = (avail - n * card) / (n - 1)
+    if gap < need:
+        warnings.append(f"fit_width {opt['fit_width']}: {n} lanes cannot fit with room for the longest label; "
+                        "shorten labels, merge two stages or split the diagram")
+    opt["card_w"], opt["gap"] = int(card), int(max(gap, 40))
+
+
+def render(spec, theme=None, animate=None, t=None, palette=None):
+    """Draw a spec. Returns a dict: svg, width, height, warnings, notes, loop (seconds of one animation loop, or
+    None), spec (the spec with every lane and row resolved). `t` freezes the animation at that second.
+
+    Raises SystemExit with every problem in the spec when it is not valid.
+    """
+    errors, warnings = check(spec)
+    if errors:
+        raise SystemExit("spec has problems:\n" + "\n".join("  " + e for e in errors))
     if spec.get("type") == "sequence":
-        # sibling module; the explicit path keeps this working under python -I
-        sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
         from render_sequence import render_sequence
-        return render_sequence(spec, spec.get("options", {}), args.theme, args.animate, args.out)
+        return render_sequence(spec, theme, animate, t, palette, warnings)
+    spec = copy.deepcopy(spec)
+    notes = []
     opt = {"card_w": 230, "gap": 150, "row_gap": 30, "trunk": 40, "x0": 32, "y0": 100,
            "lane_pad": 16, "show_new": False, "theme": "light", "animate": "none",
-           "lines": "merge", "show_lanes": True, "group_pad": 20, "group_head": 30, "flip": False}
+           "lines": "merge", "show_lanes": True, "group_pad": 20, "group_head": 30, "flip": False,
+           "fit_width": None, "auto_glyph": True, "diff_labels": False, "legend": False}
     opt.update(spec.get("options", {}))
-    if args.theme:
-        opt["theme"] = args.theme
+    if theme:
+        opt["theme"] = theme
     if spec.get("layout") == "star":
         opt.setdefault("lines", "lanes")
         if "lines" not in spec.get("options", {}):
             opt["lines"] = "lanes"
         opt["group_pad"] = spec.get("options", {}).get("group_pad", 26)
         spec = auto_star(spec, opt)
-    if args.animate:
-        opt["animate"] = args.animate
-    T = THEMES[opt["theme"]]
+    elif needs_layout(spec):
+        auto_layout(spec, warnings)
+    if "lines" not in spec.get("options", {}) and spec.get("layout") != "star" \
+            and any(e.get("from_col") or e.get("to_col") for e in spec.get("edges", [])):
+        opt["lines"] = "lanes"       # column-level edges need a lane each, or the FK lines cannot be followed
+    if animate:
+        opt["animate"] = animate
+    T = build_theme(opt["theme"], merge_palette(palette, opt.get("palette")))
     P = T["states"]
-    warnings = []
+    SANS_F, MONO_F = fonts(opt)
 
     nodes = {n["id"]: n for n in spec["nodes"]}
     lanes = list(spec["lanes"])
     if opt["flip"]:
         lanes.reverse()
     lane_idx = {l["id"]: i for i, l in enumerate(lanes)}
+    if opt["fit_width"]:
+        fit_widths(opt, len(lanes), spec.get("edges", []), warnings)
     for n in nodes.values():
         if n["lane"] not in lane_idx:
             raise SystemExit(f"node {n['id']}: unknown lane {n['lane']}")
-        n.setdefault("state", "unchanged")
-        n.setdefault("glyph", "table" if n.get("columns") else "db")
+        n.setdefault("title", n["id"])
+        n["state"] = norm_state(n.get("state")) or "unchanged"
+        if "glyph" not in n:
+            inferred = None if n.get("columns") or not opt["auto_glyph"] else infer_glyph(n)
+            n["glyph"] = "table" if n.get("columns") else (inferred or "db")
+        if n.get("icon"):
+            n["icon"] = clean_path(n["icon"], f"node {n['id']}")
+        for c in n.get("columns") or []:
+            c["state"] = norm_state(c.get("state"))
         n.setdefault("w", opt["card_w"])
         cols = n.get("columns") or []
         n["h"] = 62 + (len(cols) * 20 + 14 if cols else 0)
@@ -352,7 +320,7 @@ def main():
     infos = []
     for e in spec["edges"]:
         a, b = nodes[e["from"]], nodes[e["to"]]
-        state = e["state"] if "state" in e else (b["state"] if b["state"] != "unchanged" else a["state"])
+        state = norm_state(e.get("state")) or (b["state"] if b["state"] != "unchanged" else a["state"])
         used_states.add(state)
         sy, ty = port_y(a, e.get("from_col")), port_y(b, e.get("to_col"))
         la, lb = lane_idx[a["lane"]], lane_idx[b["lane"]]
@@ -480,12 +448,14 @@ def main():
     dx = max(0, 14 - min_x) if gbox else 0
     dy = max(0, (74 if opt["show_lanes"] else 14) - min_y) if gbox else 0
     total_w, total_h = int(round(content_w + dx)), int(round(content_h + dy))
+    if opt["legend"]:
+        total_h += 30
 
     title = spec.get("title", "Diagram")
     s = []
     add = s.append
     add(f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {total_w} {total_h}" width="{total_w}" height="{total_h}" '
-        f'role="img" aria-label="{esc(title)}" font-family="{SANS}">')
+        f'role="img" aria-label="{esc(title)}" font-family="{SANS_F}">')
     add(f'<title>{esc(title)}</title>')
     defs = [f'<pattern id="dots" width="18" height="18" patternUnits="userSpaceOnUse"><circle cx="1.5" cy="1.5" r="1" fill="{T["dots"]}"/></pattern>']
     for st in sorted(used_states | {"unchanged"}):
@@ -499,7 +469,7 @@ def main():
         for i, lane in enumerate(lanes):
             x = col_x[i] - opt["lane_pad"]
             add(f'<g><rect x="{x}" y="28" width="{lane_w}" height="{content_h - 48}" rx="12" fill="{T["lane"]}"/>'
-                f'<text x="{x + opt["lane_pad"]}" y="54" font-size="10" font-weight="700" letter-spacing=".12em" fill="{T["lane_label"]}">{esc(lane["label"].upper())}</text>'
+                f'<text x="{x + opt["lane_pad"]}" y="54" font-size="10" font-weight="700" letter-spacing=".12em" fill="{T["lane_label"]}">{esc(lane.get("label", lane["id"]).upper())}</text>'
                 + (f'<text x="{x + opt["lane_pad"]}" y="70" font-size="9.5" fill="{T["lane_sub"]}">{esc(lane["sub"])}</text>' if lane.get("sub") else "")
                 + '</g>')
 
@@ -508,8 +478,9 @@ def main():
         g = groups[gid]
         x0_, y0_, x1_, y1_ = gbox[gid]
         stroke = T["group_stroke"]
-        if g.get("state") and g["state"] != "unchanged":
-            stroke = P[g["state"]][0]
+        gstate = norm_state(g.get("state"))
+        if gstate and gstate != "unchanged":
+            stroke = P[gstate][0]
         fill = T["group_fill"][min(glevel[gid], len(T["group_fill"]) - 1)]
         add(f'<g><rect x="{x0_:.1f}" y="{y0_:.1f}" width="{x1_ - x0_:.1f}" height="{y1_ - y0_:.1f}" rx="14" fill="{fill}" '
             f'stroke="{stroke}" stroke-width="1" stroke-dasharray="{"5 4" if g.get("style") == "dashed" else "none"}"/>'
@@ -517,13 +488,20 @@ def main():
             + (f'<text x="{x0_ + 16 + len(g.get("title", gid)) * 6.6 + 10:.1f}" y="{y0_ + 21:.1f}" font-size="9.5" fill="{T["lane_sub"]}">{esc(g["sub"])}</text>' if g.get("sub") else "")
             + '</g>')
 
+    loop = None
     for p in paths:
         color = P[p["state"]][0]
         dash = ' stroke-dasharray="2 4"' if p["style"] == "dotted" else ""
+        if p["state"] == "removed" and opt["diff_labels"]:
+            dash = ' stroke-dasharray="6 4"'
         anim = ""
         if opt["animate"] == "dashes":
+            loop = 0.9
             dash = ' stroke-dasharray="6 6"'
-            anim = '<animate attributeName="stroke-dashoffset" from="0" to="-12" dur="0.9s" repeatCount="indefinite"/>'
+            if t is None:
+                anim = '<animate attributeName="stroke-dashoffset" from="0" to="-12" dur="0.9s" repeatCount="indefinite"/>'
+            else:
+                dash += f' stroke-dashoffset="{-12 * ((t % 0.9) / 0.9):.2f}"'
         add(f'<path d="{rounded(p["pts"])}" marker-end="url(#mk-{p["state"]})" fill="none" stroke="{color}" stroke-width="1.5"{dash}>{anim}</path>')
 
     if opt["animate"] == "packets":
@@ -531,11 +509,18 @@ def main():
         steps = sorted({p["step"] for p in paths})
         dur = len(steps) * STEP_SECONDS + PAUSE_SECONDS
         fade = 0.12 / dur
+        loop = dur
         for p in paths:
             k = steps.index(p["step"])
             t0 = k * STEP_SECONDS / dur
             t1 = (k * STEP_SECONDS + TRAVEL_SECONDS) / dur
             color = P[p["state"]][0]
+            if t is not None:
+                at = packet(flatten(p["pts"], 8), t, dur, t0, t1, fade)
+                if at:
+                    add(f'<circle cx="{at[0]:.1f}" cy="{at[1]:.1f}" r="3.6" fill="{color}" stroke="{T["packet_ring"]}" '
+                        f'stroke-width="1.4" opacity="{at[2]:.2f}"/>')
+                continue
             add(f'<circle r="3.6" fill="{color}" stroke="{T["packet_ring"]}" stroke-width="1.4" opacity="0">'
                 f'<animateMotion dur="{dur:.2f}s" repeatCount="indefinite" keyPoints="0;0;1;1" keyTimes="0;{t0:.4f};{t1:.4f};1" '
                 f'calcMode="linear" path="{rounded(p["pts"])}"/>'
@@ -547,15 +532,20 @@ def main():
         stroke = T["card_stroke"] if n["state"] == "unchanged" else color
         sop = 1 if n["state"] == "unchanged" else op
         x, y0, w, h = n["x"], n["y"], n["w"], n["h"]
-        add(f'<g filter="drop-shadow(0 1px 2px {T["shadow"]})"><rect x="{x}" y="{y0}" width="{w}" height="{h}" rx="10" '
-            f'fill="{T["card"]}" stroke="{stroke}" stroke-opacity="{sop}" stroke-width="1"/>')
-        add(f'<rect x="{x + 14}" y="{y0 + 18}" width="26" height="26" rx="7" fill="{T["chip"]}"/>{glyph(n["glyph"], x + 14, y0 + 18, T["glyph"])}')
+        gone = n["state"] == "removed" and opt["diff_labels"]
+        ghost_op = ' opacity="0.8"' if gone else ""
+        ghost_dash = ' stroke-dasharray="5 4"' if gone else ""
+        strike = ' text-decoration="line-through"' if gone else ""
+        add(f'<g filter="drop-shadow(0 1px 2px {T["shadow"]})"{ghost_op}><rect x="{x}" y="{y0}" width="{w}" height="{h}" rx="10" '
+            f'fill="{T["card"]}" stroke="{stroke}" stroke-opacity="{sop}" stroke-width="1"{ghost_dash}/>')
+        add(f'<rect x="{x + 14}" y="{y0 + 18}" width="26" height="26" rx="7" fill="{T["chip"]}"/>{glyph(n["glyph"], x + 14, y0 + 18, T["glyph"], n.get("icon"))}')
         sub = n.get("sub") or (f'{len(n["columns"])} columns' if n.get("columns") else "")
         # without a subtitle the title sits level with the icon chip instead of hugging the top edge
-        add(f'<text x="{x + 50}" y="{y0 + (27 if sub else 35)}" font-size="11.5" font-weight="600" fill="{T["title"]}">{esc(n["title"])}</text>')
+        add(f'<text x="{x + 50}" y="{y0 + (27 if sub else 35)}" font-size="11.5" font-weight="600" fill="{T["title"]}"{strike}>{esc(n["title"])}</text>')
         if sub:
-            add(f'<text x="{x + 50}" y="{y0 + 45}" font-size="9.5" fill="{T["sub"]}" font-family="{MONO}">{esc(sub)}</text>')
-        badge = n.get("badge") or ("NEW" if opt["show_new"] and n["state"] == "added" else None)
+            add(f'<text x="{x + 50}" y="{y0 + 45}" font-size="9.5" fill="{T["sub"]}" font-family="{MONO_F}">{esc(sub)}</text>')
+        badge = n.get("badge") or (STATE_WORDS.get(n["state"]) if opt["diff_labels"] else None) \
+            or ("NEW" if opt["show_new"] and n["state"] == "added" else None)
         if badge:
             bw = len(badge) * 6 + 16
             bx = x + w - bw - 12
@@ -569,27 +559,100 @@ def main():
             for i, c in enumerate(n["columns"]):
                 cy = y0 + 62 + 7 + i * 20 + 10
                 key = c.get("key")
+                cs = c.get("state") if c.get("state") != "unchanged" else None
+                name_fill = P[cs][0] if cs else (T["title"] if opt["diff_labels"] else T["colname"])   # green means added in a diff
+                deco = ' text-decoration="line-through"' if cs == "removed" else ""
+                if cs:
+                    add(f'<rect x="{x + 1}" y="{cy - 9}" width="3" height="18" fill="{P[cs][0]}"/>')
                 if key:
                     add(f'<rect x="{x + 14}" y="{cy - 7.5}" width="{kw:.1f}" height="15" rx="7.5" fill="{T["chip"]}"/>'
                         f'<text x="{x + 14 + kw / 2:.1f}" y="{cy + 3}" text-anchor="middle" font-size="8" font-weight="700" fill="{T["sub"]}">{esc(key)}</text>')
-                add(f'<text x="{x + 14 + kw + 8:.1f}" y="{cy + 3.5}" font-size="10.5" fill="{T["colname"]}" font-family="{MONO}">{esc(c["name"])}</text>')
+                add(f'<text x="{x + 14 + kw + 8:.1f}" y="{cy + 3.5}" font-size="10.5" fill="{name_fill}" font-family="{MONO_F}"{deco}>{esc(c["name"])}</text>')
                 if c.get("type"):
-                    add(f'<text x="{x + w - 14}" y="{cy + 3.5}" text-anchor="end" font-size="9.5" fill="{T["coltype"]}" font-family="{MONO}">{esc(c["type"])}</text>')
+                    room = int((w - 28 - kw - 8 - len(c["name"]) * 6.3 - 3) / 5.7)      # mono characters left on the row
+                    ctype = c["type"] if len(c["type"]) <= room else c["type"][:max(room - 1, 3)] + "…"
+                    if ctype != c["type"]:
+                        warnings.append(f"{n['id']}.{c['name']}: type '{c['type']}' is cut to fit the card; shorten it or widen options.card_w")
+                    add(f'<text x="{x + w - 14}" y="{cy + 3.5}" text-anchor="end" font-size="9.5" fill="{P[cs][0] if cs == "modified" else T["coltype"]}" font-family="{MONO_F}"{deco}>{esc(ctype)}</text>')
         add('</g>')
 
     for px, py, text, state in pills:
         w = len(text) * 5.9 + 16
         add(f'<g><rect x="{px - w / 2:.1f}" y="{py - 8.5:.1f}" width="{w:.1f}" height="17" rx="8.5" fill="{T["pill"]}" stroke="{T["pill_stroke"]}"/>'
             f'<text x="{px:.1f}" y="{py + 3.2:.1f}" text-anchor="middle" font-size="9" font-weight="600" fill="{P[state][2]}">{esc(text)}</text></g>')
-    add('</g></svg>')
-    open(args.out, "w").write("\n".join(s))
-    print(f"wrote {args.out} ({total_w}x{total_h}, theme={opt['theme']}, animate={opt['animate']})")
-    for w_ in sorted(set(warnings)):
-        print("WARNING:", w_)
+    key = legend([n["state"] for n in nodes.values()] + [i["state"] for i in infos], T, total_w, total_h - 30) if opt["legend"] else ""
+    add('</g>' + key + '</svg>')
+    notes = []
     if total_w > 1800:
-        print(f"NOTE: {total_w}px wide, too wide for a slide or README. Set options.card_w to about 170 and options.gap to about 110 "
-              "(keep gap above the longest label), merge two stages into one column, or split the diagram.")
+        notes.append(f"{total_w}px wide, too wide for a slide or README. Set options.fit_width to 1700 (or card_w about 170 "
+                     "and gap about 110, keeping gap above the longest label), merge two stages into one column, or split the diagram.")
+    return {"svg": "\n".join(s), "width": total_w, "height": total_h, "warnings": sorted(set(warnings)), "notes": notes,
+            "loop": loop, "spec": spec, "theme": opt["theme"], "animate": opt["animate"]}
+
+
+def legend(states, T, total_w, y):
+    """Key for the state colours with how many elements (nodes and lines) are in each, drawn bottom right."""
+    P = T["states"]
+    counts = {st: 0 for st in ("added", "modified", "removed")}
+    for st in states:
+        if st in counts:
+            counts[st] += 1
+    items = [(st, f"{STATE_WORDS[st].title()} {n}") for st, n in counts.items() if n]
+    items.append(("unchanged", "Unchanged"))
+    x = total_w - 24
+    out = []
+    for st, text in reversed(items):
+        w = len(text) * 5.9 + 30
+        x -= w
+        out.append(f'<g><rect x="{x:.1f}" y="{y}" width="{w - 8:.1f}" height="18" rx="9" fill="{T["pill"]}" stroke="{T["pill_stroke"]}"/>'
+                   f'<circle cx="{x + 11:.1f}" cy="{y + 9}" r="3.6" fill="{P[st][0]}"/>'
+                   f'<text x="{x + 20:.1f}" y="{y + 12.3}" font-size="9" font-weight="600" fill="{P[st][2]}">{esc(text)}</text></g>')
+    return "".join(out)
+
+
+def main():
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("spec")
+    ap.add_argument("out", nargs="?")
+    ap.add_argument("--theme", choices=THEMES)
+    ap.add_argument("--animate", choices=["none", "packets", "dashes"])
+    ap.add_argument("--theme-file", help="JSON with palette tokens, font and mono for a brand look (see SKILL.md)")
+    ap.add_argument("--at", type=float, help="freeze the animation at this many seconds and draw it as a still frame")
+    ap.add_argument("--resolve", metavar="FILE", help="also write the spec with every automatic lane and row filled in, to pin and tweak")
+    ap.add_argument("--validate", action="store_true", help="check the spec and print problems without rendering")
+    args = ap.parse_args()
+
+    spec = json.load(open(args.spec))
+    if args.validate:
+        errors, warnings = check(spec)
+        for w_ in warnings:
+            print("WARNING:", w_)
+        for e_ in errors:
+            print("ERROR:", e_)
+        print("spec ok" if not errors else f"{len(errors)} error(s)")
+        return 1 if errors else 0
+    if not args.out:
+        ap.error("out is required unless --validate is given")
+    palette, base = None, {}
+    if args.theme_file:
+        base = json.load(open(args.theme_file))
+        palette = base.get("palette")
+        spec.setdefault("options", {})
+        for k in ("font", "mono"):
+            if k in base:
+                spec["options"].setdefault(k, base[k])
+    res = render(spec, theme=args.theme or base.get("theme"), animate=args.animate, t=args.at, palette=palette)
+    with open(args.out, "w") as f:
+        f.write(res["svg"])
+    if args.resolve:
+        with open(args.resolve, "w") as f:
+            json.dump(res["spec"], f, indent=2)
+    print(f"wrote {args.out} ({res['width']}x{res['height']}, theme={res['theme']}, animate={res['animate']})")
+    for w_ in res["warnings"]:
+        print("WARNING:", w_)
+    for n_ in res["notes"]:
+        print("NOTE:", n_)
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

@@ -1,0 +1,96 @@
+{
+  "title": "Automatic layout: no lanes, no rows",
+  "options": {
+    "fit_width": 1700
+  },
+  "nodes": [
+    {
+      "id": "raw_orders",
+      "title": "raw.orders",
+      "layer": "raw"
+    },
+    {
+      "id": "raw_customers",
+      "title": "raw.customers",
+      "layer": "raw"
+    },
+    {
+      "id": "raw_payments",
+      "title": "raw.payments",
+      "layer": "raw"
+    },
+    {
+      "id": "stg_orders",
+      "title": "stg_orders",
+      "layer": "staging"
+    },
+    {
+      "id": "stg_customers",
+      "title": "stg_customers",
+      "layer": "staging"
+    },
+    {
+      "id": "stg_payments",
+      "title": "stg_payments",
+      "layer": "staging"
+    },
+    {
+      "id": "dim_customers",
+      "title": "dim_customers",
+      "layer": "marts"
+    },
+    {
+      "id": "fct_orders",
+      "title": "fct_orders",
+      "layer": "marts"
+    },
+    {
+      "id": "agg_daily_revenue",
+      "title": "agg_daily_revenue",
+      "layer": "aggregates"
+    },
+    {
+      "id": "revenue_dashboard",
+      "title": "Revenue dashboard",
+      "layer": "dashboards"
+    }
+  ],
+  "edges": [
+    {
+      "from": "raw_orders",
+      "to": "stg_orders"
+    },
+    {
+      "from": "raw_customers",
+      "to": "stg_customers"
+    },
+    {
+      "from": "raw_payments",
+      "to": "stg_payments"
+    },
+    {
+      "from": "stg_customers",
+      "to": "dim_customers"
+    },
+    {
+      "from": "stg_orders",
+      "to": "fct_orders"
+    },
+    {
+      "from": "stg_payments",
+      "to": "fct_orders"
+    },
+    {
+      "from": "dim_customers",
+      "to": "fct_orders"
+    },
+    {
+      "from": "fct_orders",
+      "to": "agg_daily_revenue"
+    },
+    {
+      "from": "agg_daily_revenue",
+      "to": "revenue_dashboard"
+    }
+  ]
+}
