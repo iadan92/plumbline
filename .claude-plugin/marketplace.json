@@ -1,0 +1,14 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "plumbline",
+  "description": "Plumbline: data diagrams for agents",
+  "owner": {"name": "iadan92", "url": "https://github.com/iadan92"},
+  "plugins": [
+    {
+      "name": "plumbline",
+      "description": "Clean SVG, PNG and GIF diagrams for data lineage, data flow, architecture, sequence diagrams and data models, plus a hook that routes data-diagram requests to the skill.",
+      "source": "./",
+      "category": "productivity"
+    }
+  ]
+}

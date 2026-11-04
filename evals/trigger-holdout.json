@@ -1,0 +1,202 @@
+[
+ {
+  "query": "Could you put together a visual of how our Kafka topics feed the Spark jobs and then the warehouse?",
+  "should_trigger": true,
+  "split": "test"
+ },
+ {
+  "query": "need a quick ERD of the orders, order_lines and products tables",
+  "should_trigger": true,
+  "split": "test"
+ },
+ {
+  "query": "map out the upstream sources of the churn_features table for me",
+  "should_trigger": true,
+  "split": "test"
+ },
+ {
+  "query": "chart the flow of data from our CRM through Fivetran into Snowflake",
+  "should_trigger": true,
+  "split": "test"
+ },
+ {
+  "query": "Show me a picture of our dbt model dependencies for the finance mart",
+  "should_trigger": true,
+  "split": "test"
+ },
+ {
+  "query": "Make a sequence diagram of the daily refresh: scheduler, extractor, warehouse, dashboard",
+  "should_trigger": true,
+  "split": "test"
+ },
+ {
+  "query": "svg of our star schema please: fact_orders with customer, product and date dims",
+  "should_trigger": true,
+  "split": "test"
+ },
+ {
+  "query": "Please illustrate the medallion layers of our lakehouse",
+  "should_trigger": true,
+  "split": "test"
+ },
+ {
+  "query": "I want to see what changed in our data model between v1 and v2 of the schema diagram",
+  "should_trigger": true,
+  "split": "test"
+ },
+ {
+  "query": "diagram for the onboarding doc: how events get from the app to the data warehouse",
+  "should_trigger": true,
+  "split": "test"
+ },
+ {
+  "query": "lineage view of the fct_payments table, as an image",
+  "should_trigger": true,
+  "split": "test"
+ },
+ {
+  "query": "Draw our data architecture with the sources on the left and the BI tools on the right",
+  "should_trigger": true,
+  "split": "test"
+ },
+ {
+  "query": "create the entity relationship diagram for the schema in db/schema.sql",
+  "should_trigger": true,
+  "split": "test"
+ },
+ {
+  "query": "visualise the DAG of our dbt project",
+  "should_trigger": true,
+  "split": "test"
+ },
+ {
+  "query": "Make a gif of data moving through the ETL pipeline for the all-hands",
+  "should_trigger": true,
+  "split": "test"
+ },
+ {
+  "query": "An architecture diagram of our streaming platform: producers, Kafka, Flink, ClickHouse, Grafana",
+  "should_trigger": true,
+  "split": "test"
+ },
+ {
+  "query": "I need the data model drawn out, facts in the middle, dimensions around, keys marked",
+  "should_trigger": true,
+  "split": "test"
+ },
+ {
+  "query": "sketch how the nightly batch moves data from Postgres through S3 into BigQuery",
+  "should_trigger": true,
+  "split": "test"
+ },
+ {
+  "query": "Turn this DDL into a diagram: CREATE TABLE a (id int primary key); CREATE TABLE b (id int primary key, a_id int references a(id));",
+  "should_trigger": true,
+  "split": "test"
+ },
+ {
+  "query": "make a png of the data flow, with our brand colours",
+  "should_trigger": true,
+  "split": "test"
+ },
+ {
+  "query": "write the SQL for a customer churn cohort analysis",
+  "should_trigger": false,
+  "split": "test"
+ },
+ {
+  "query": "debug this airflow task that keeps timing out on the snowflake connection",
+  "should_trigger": false,
+  "split": "test"
+ },
+ {
+  "query": "explain how kafka consumer groups rebalance",
+  "should_trigger": false,
+  "split": "test"
+ },
+ {
+  "query": "what is the difference between ETL and ELT?",
+  "should_trigger": false,
+  "split": "test"
+ },
+ {
+  "query": "add a not_null test for customer_id in my dbt schema.yml",
+  "should_trigger": false,
+  "split": "test"
+ },
+ {
+  "query": "write a terraform module for a redshift cluster",
+  "should_trigger": false,
+  "split": "test"
+ },
+ {
+  "query": "generate a bar chart of revenue by quarter with matplotlib",
+  "should_trigger": false,
+  "split": "test"
+ },
+ {
+  "query": "write a mermaid flowchart of our data pipeline",
+  "should_trigger": false,
+  "split": "test"
+ },
+ {
+  "query": "create a README for our data platform repo",
+  "should_trigger": false,
+  "split": "test"
+ },
+ {
+  "query": "convert this CSV to parquet with duckdb",
+  "should_trigger": false,
+  "split": "test"
+ },
+ {
+  "query": "review this dbt model for performance issues",
+  "should_trigger": false,
+  "split": "test"
+ },
+ {
+  "query": "how do I set up incremental models in dbt?",
+  "should_trigger": false,
+  "split": "test"
+ },
+ {
+  "query": "draw a flowchart of the checkout process for a webshop",
+  "should_trigger": false,
+  "split": "test"
+ },
+ {
+  "query": "design a logo for the analytics guild",
+  "should_trigger": false,
+  "split": "test"
+ },
+ {
+  "query": "summarize the attached data contract in five bullets",
+  "should_trigger": false,
+  "split": "test"
+ },
+ {
+  "query": "write a pydantic model for an order event",
+  "should_trigger": false,
+  "split": "test"
+ },
+ {
+  "query": "make a pie chart of orders by country",
+  "should_trigger": false,
+  "split": "test"
+ },
+ {
+  "query": "optimize this postgres query with a covering index",
+  "should_trigger": false,
+  "split": "test"
+ },
+ {
+  "query": "set up a dagster schedule that runs every hour",
+  "should_trigger": false,
+  "split": "test"
+ },
+ {
+  "query": "write documentation for the fct_orders model columns",
+  "should_trigger": false,
+  "split": "test"
+ }
+]

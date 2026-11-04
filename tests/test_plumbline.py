@@ -67,6 +67,17 @@ class Examples(unittest.TestCase):
             self.assertEqual((errors, warnings), ([], []), path.name)
 
 
+class Escaping(unittest.TestCase):
+    def test_text_with_markup_stays_well_formed(self):
+        hostile = 'x"><script>alert(1)</script> & <b>'
+        for spec in (lineage([{"id": "a", "title": hostile, "sub": hostile, "columns": [{"name": hostile, "type": hostile}]}], [], title=hostile),
+                     {"type": "sequence", "title": hostile, "participants": [{"id": "a", "title": hostile}, {"id": "b"}],
+                      "messages": [{"from": "a", "to": "b", "label": hostile, "reply": hostile}]}):
+            svg = render(spec)["svg"]
+            root = ET.fromstring(svg)
+            self.assertFalse(any(el.tag.endswith("script") for el in root.iter()))
+
+
 class Validation(unittest.TestCase):
     def test_names_the_field_and_suggests_a_fix(self):
         spec = lineage([{"id": "a", "lane": "stagging"}], [], lanes=[{"id": "staging"}])
@@ -148,6 +159,11 @@ class AutoLayout(unittest.TestCase):
         pos, res = self.placed(spec)
         lanes = [l["id"] for l in res["spec"]["lanes"]]
         self.assertEqual(lanes.index(pos["late"][0]), lanes.index(pos["z"][0]) - 1)
+
+    def test_a_single_node_without_edges(self):
+        res = render({"nodes": [{"id": "solo", "title": "Solo"}]})
+        self.assertEqual(res["warnings"], [])
+        ET.fromstring(res["svg"])
 
     def test_a_cycle_warns_and_still_renders(self):
         res = render(lineage([{"id": "a"}, {"id": "b"}], [("a", "b"), ("b", "a")]))
@@ -470,8 +486,55 @@ class SkillPackage(unittest.TestCase):
 
     def test_no_python_newer_than_3_8_syntax(self):
         import ast
-        for path in list(SCRIPTS.glob("*.py")) + list((ROOT / "tools").glob("*.py")):
+        for path in list(SCRIPTS.glob("*.py")) + list((ROOT / "tools").glob("*.py")) + list((ROOT / "hooks").glob("*.py")):
             ast.parse(path.read_text(), feature_version=(3, 8))
+
+
+class RoutingHook(unittest.TestCase):
+    """hooks/route_to_skill.py adds a reminder to data-diagram prompts and stays silent otherwise."""
+
+    @classmethod
+    def setUpClass(cls):
+        sys.path.insert(0, str(ROOT / "hooks"))
+        import route_to_skill
+        cls.hook = route_to_skill
+
+    def labelled(self):
+        for name in ("trigger-evals.json", "trigger-holdout.json"):
+            yield from json.load(open(ROOT / "evals" / name))
+
+    def test_matches_every_query_that_should_use_the_skill(self):
+        missed = [e["query"] for e in self.labelled() if e["should_trigger"] and not self.hook.wants_diagram(e["query"])]
+        self.assertEqual(missed, [])
+
+    def test_stays_quiet_on_near_misses(self):
+        wrong = [e["query"] for e in self.labelled() if not e["should_trigger"] and self.hook.wants_diagram(e["query"])]
+        self.assertEqual(wrong, [])
+
+    def test_explicit_other_tools_are_respected(self):
+        for prompt in ("draw the data lineage in mermaid", "make an excalidraw of our warehouse", "plantuml sequence diagram of the etl"):
+            self.assertFalse(self.hook.wants_diagram(prompt), prompt)
+
+    def test_hook_protocol(self):
+        proc = subprocess.run([sys.executable, "-I", str(ROOT / "hooks" / "route_to_skill.py")], input=json.dumps({"prompt": "draw an ERD from schema.sql"}),
+                              capture_output=True, text=True)
+        out = json.loads(proc.stdout)["hookSpecificOutput"]
+        self.assertEqual(out["hookEventName"], "UserPromptSubmit")
+        self.assertIn("plumbline-svg-diagrams", out["additionalContext"])
+        quiet = subprocess.run([sys.executable, "-I", str(ROOT / "hooks" / "route_to_skill.py")], input=json.dumps({"prompt": "write a sql query"}),
+                               capture_output=True, text=True)
+        self.assertEqual((quiet.returncode, quiet.stdout), (0, ""))
+        bad = subprocess.run([sys.executable, "-I", str(ROOT / "hooks" / "route_to_skill.py")], input="not json", capture_output=True, text=True)
+        self.assertEqual((bad.returncode, bad.stdout), (0, ""))
+
+    def test_plugin_files_are_consistent(self):
+        plugin = json.load(open(ROOT / ".claude-plugin" / "plugin.json"))
+        market = json.load(open(ROOT / ".claude-plugin" / "marketplace.json"))
+        hooks = json.load(open(ROOT / "hooks" / "hooks.json"))
+        self.assertEqual(plugin["name"], market["plugins"][0]["name"])
+        command = hooks["hooks"]["UserPromptSubmit"][0]["hooks"][0]["command"]
+        self.assertIn("route_to_skill.py", command)
+        self.assertTrue((ROOT / "hooks" / "route_to_skill.py").exists())
 
 
 @unittest.skipUnless(shutil.which("node") and not os.environ.get("PLUMBLINE_SKIP_EXPORT"), "needs Node.js")

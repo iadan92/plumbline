@@ -1,0 +1,8 @@
+{
+  "name": "plumbline",
+  "version": "0.2.0",
+  "description": "Straight lines for crooked data pipelines: clean SVG, PNG and GIF diagrams for lineage, data flow, architecture, sequence diagrams and data models, with dbt and DDL import and version diffs. Includes a hook that routes data-diagram requests to the skill.",
+  "author": {"name": "iadan92", "url": "https://github.com/iadan92"},
+  "homepage": "https://github.com/iadan92/plumbline",
+  "license": "MIT"
+}

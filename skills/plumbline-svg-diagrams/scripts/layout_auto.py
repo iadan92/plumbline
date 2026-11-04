@@ -130,13 +130,13 @@ def auto_layout(spec, warnings):
             if n.get("layer"):
                 labels.setdefault(idx[n["id"]], {}).setdefault(n["layer"], 0)
                 labels[idx[n["id"]]][n["layer"]] += 1
-        lanes = [{"id": f"stage{k + 1}", "label": max(labels[k], key=labels[k].get) if k in labels else f"stage {k + 1}"}
+        lanes = [{"id": f"stage{k + 1}", "label": max(labels[k], key=labels[k].get) if k in labels else ""}
                  for k in range(count)]
     else:
         lanes = given
         if count > len(lanes):
             warnings.append(f"{count - len(lanes)} lane(s) added after '{lanes[-1]['id']}' because nodes flow further right than the lanes given")
-            lanes += [{"id": f"stage{k + 1}", "label": f"stage {k + 1}"} for k in range(len(lanes), count)]
+            lanes += [{"id": f"stage{k + 1}", "label": ""} for k in range(len(lanes), count)]
     lane_of = {n: lanes[k]["id"] for n, k in idx.items()}
     if layered:
         spec["lanes"] = lanes

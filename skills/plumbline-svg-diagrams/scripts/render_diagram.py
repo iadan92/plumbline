@@ -17,7 +17,7 @@ import os
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))   # sibling modules; python -I drops this entry
-from common import (MONO, THEMES, STATE_WORDS, build_theme, clean_path, esc, flatten, fonts,  # noqa: E402
+from common import (MONO, THEMES, STATE_WORDS, attr, build_theme, clean_path, esc, flatten, fonts,  # noqa: E402
                     glyph, infer_glyph, norm_state, packet, rounded)
 from layout_auto import auto_layout, needs_layout  # noqa: E402
 from spec_check import check  # noqa: E402
@@ -239,7 +239,7 @@ def render(spec, theme=None, animate=None, t=None, palette=None):
         from render_sequence import render_sequence
         return render_sequence(spec, theme, animate, t, palette, warnings)
     spec = copy.deepcopy(spec)
-    notes = []
+    spec.setdefault("edges", [])
     opt = {"card_w": 230, "gap": 150, "row_gap": 30, "trunk": 40, "x0": 32, "y0": 100,
            "lane_pad": 16, "show_new": False, "theme": "light", "animate": "none",
            "lines": "merge", "show_lanes": True, "group_pad": 20, "group_head": 30, "flip": False,
@@ -455,7 +455,7 @@ def render(spec, theme=None, animate=None, t=None, palette=None):
     s = []
     add = s.append
     add(f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {total_w} {total_h}" width="{total_w}" height="{total_h}" '
-        f'role="img" aria-label="{esc(title)}" font-family="{SANS_F}">')
+        f'role="img" aria-label="{attr(title)}" font-family="{SANS_F}">')
     add(f'<title>{esc(title)}</title>')
     defs = [f'<pattern id="dots" width="18" height="18" patternUnits="userSpaceOnUse"><circle cx="1.5" cy="1.5" r="1" fill="{T["dots"]}"/></pattern>']
     for st in sorted(used_states | {"unchanged"}):
@@ -580,7 +580,8 @@ def render(spec, theme=None, animate=None, t=None, palette=None):
         w = len(text) * 5.9 + 16
         add(f'<g><rect x="{px - w / 2:.1f}" y="{py - 8.5:.1f}" width="{w:.1f}" height="17" rx="8.5" fill="{T["pill"]}" stroke="{T["pill_stroke"]}"/>'
             f'<text x="{px:.1f}" y="{py + 3.2:.1f}" text-anchor="middle" font-size="9" font-weight="600" fill="{P[state][2]}">{esc(text)}</text></g>')
-    key = legend([n["state"] for n in nodes.values()] + [i["state"] for i in infos], T, total_w, total_h - 30) if opt["legend"] else ""
+    key = legend([n["state"] for n in nodes.values()] + [i["state"] for i in infos]
+                   + [c["state"] for n in nodes.values() for c in n.get("columns") or [] if n["state"] != "removed"], T, total_w, total_h - 30) if opt["legend"] else ""
     add('</g>' + key + '</svg>')
     notes = []
     if total_w > 1800:
@@ -591,7 +592,7 @@ def render(spec, theme=None, animate=None, t=None, palette=None):
 
 
 def legend(states, T, total_w, y):
-    """Key for the state colours with how many elements (nodes and lines) are in each, drawn bottom right."""
+    """Key for the state colours with how many elements (nodes, lines and table columns) are in each, drawn bottom right."""
     P = T["states"]
     counts = {st: 0 for st in ("added", "modified", "removed")}
     for st in states:

@@ -24,6 +24,46 @@
       "prompt": "Draw a sequence diagram of how our nightly pipeline runs: Airflow triggers an Airbyte sync, Airbyte pulls pages from a CRM API (5 pages) and loads Snowflake raw, then Airflow runs dbt build, which reads raw and writes marts, and finally Airflow refreshes a Looker dashboard. Three phases, numbered calls, as an SVG for a README.",
       "expected_output": "A sequence SVG with participant columns, lifelines, activation bars, solid calls and dashed returns, three labelled phases, numbered calls, no clipped labels.",
       "files": []
+    },
+    {
+      "id": 4,
+      "name": "dbt-manifest-import",
+      "prompt": "I have a dbt manifest at {FILE0}. Draw the lineage of everything upstream of fct_orders as an SVG for our wiki, with the models grouped by layer from left to right. Save it as lineage.svg.",
+      "expected_output": "An SVG with columns by layer (sources, staging, intermediate, marts), only fct_orders and its ancestors (no agg_daily_revenue, no dashboard, no legacy_report), lines between them and no line through a card.",
+      "files": [
+        "skills/plumbline-svg-diagrams/assets/examples/dbt-manifest-sample.json"
+      ]
+    },
+    {
+      "id": 5,
+      "name": "layout-instructions-win",
+      "prompt": "Draw a left to right lineage SVG, one column per layer: raw (orders, customers, payments), staging (stg_orders, stg_customers, stg_payments), marts (dim_customers, fct_orders), aggregates (agg_daily_revenue), dashboards (revenue_dashboard). Each stg_ model reads from its raw table; dim_customers reads stg_customers; fct_orders reads stg_orders, stg_payments and dim_customers; agg_daily_revenue reads fct_orders; the dashboard reads the aggregate. The payments chain MUST be on the top row and the dashboard must be alone in the right-most column. Save it as lineage.svg.",
+      "expected_output": "payments chain (raw.payments, stg_payments) drawn at a smaller y than the orders and customers chains; revenue_dashboard has the largest x of all cards; valid SVG with arrows.",
+      "files": []
+    },
+    {
+      "id": 6,
+      "name": "schema-diff",
+      "prompt": "Here are two versions of our billing schema: {FILE0} (old) and {FILE1} (new). Draw one diagram that shows what changed: tables and columns that were added, removed or changed, each clearly labelled and coloured, with the tables' keys visible. Save it as schema-diff.svg and give me a short list of the changes.",
+      "expected_output": "One SVG of the schema with ADDED / CHANGED / REMOVED style labels or a legend; refunds table marked added; invoices status column marked removed and paid_at added; plans price type changed and currency added.",
+      "files": [
+        "evals/files/schema_v1.sql",
+        "evals/files/schema_v2.sql"
+      ]
+    },
+    {
+      "id": 7,
+      "name": "animated-gif",
+      "prompt": "Make an animated GIF (not an SVG) for a slide: a pipeline flow from Postgres to an S3 landing bucket to Snowflake raw to dbt marts to a Looker dashboard, with a dot travelling along each connection. Save it as flow.gif.",
+      "expected_output": "A valid GIF89a file with many frames that loops, showing five stages left to right.",
+      "files": []
+    },
+    {
+      "id": 8,
+      "name": "brand-colours",
+      "prompt": "Draw the lineage raw_orders -> stg_orders -> fct_orders -> orders_dashboard as an SVG in our brand look: page background #fdf6ec, cards #fffaf2 with a #d9c7a8 border, text #3b2a14, and connection lines in #0b6e4f. Save it as brand.svg.",
+      "expected_output": "SVG using the requested colours for background, cards, text and lines, readable, four nodes in a row with arrows.",
+      "files": []
     }
   ]
 }

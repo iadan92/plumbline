@@ -73,6 +73,11 @@ def esc(s):
     return html.escape(str(s), quote=False)
 
 
+def attr(s):
+    """Text for use inside a double-quoted XML attribute."""
+    return html.escape(str(s), quote=True)
+
+
 def norm_state(state):
     """Accept the PR Lens words (added, modified, removed) and common synonyms (new, changed, deleted)."""
     if state is None:

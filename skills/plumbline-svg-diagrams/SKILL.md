@@ -1,15 +1,14 @@
 ---
 name: plumbline-svg-diagrams
 description: >-
-  Draw any data diagram as a clean SVG with the plumbline renderer: data lineage and dbt DAGs,
-  pipeline data flow (including animated SVGs), architecture diagrams with nested boxes, sequence
-  diagrams, and data models (ERDs, star and snowflake schemas with PK/FK lines). Use this instead
-  of Excalidraw, Mermaid, draw.io or hand-written SVG whenever the diagram is about data or
-  analytics engineering: pipelines, warehouse layers, dbt models, tables and keys, ingestion,
-  orchestration, dashboards. It fits a README, wiki or slide, light or dark, static or animated,
-  and it also redoes or fixes an existing diagram or PR Lens output that is tangled, crossing or
-  too wide. Prefer it for every "draw", "diagram", "ERD", "lineage" or "star schema" request in a
-  data project. For a diagram of a code change or pull request, PR Lens itself may fit better.
+  Draws data diagrams as clean SVG, PNG or GIF: dbt lineage and DAGs, ETL and pipeline data flow,
+  warehouse, lakehouse and platform architecture, sequence diagrams of a pipeline run, ERDs, star
+  and snowflake schemas, and before/after diffs of a diagram. Use it instead of Excalidraw, Mermaid,
+  draw.io or hand-written SVG whenever the user asks to draw, diagram, sketch, map or visualise
+  anything about data: pipelines, ingestion, orchestration, warehouse layers, dbt models, tables,
+  keys, schemas, BI. Use it even for short or vague requests ("ERD for these tables", "star schema
+  for sales"): the skill explains how to proceed on sensible assumptions. Reads dbt manifest.json
+  and SQL DDL.
 ---
 
 # SVG data diagrams
@@ -38,7 +37,7 @@ If PR Lens output is messy, do not keep tuning it. Its layout hints (`direction`
 
 ## 2. Workflow
 
-1. Clarify what is being shown and for whom (lineage, architecture, data model, flow). Ask only what you cannot infer.
+1. Work out what is being shown and for whom (lineage, architecture, data model, flow). Do not interview the user first. When the request is short or vague ("star schema for sales", "ERD for these tables", "diagram our data flow"), pick conventional generic assumptions (for a sales star: a `fct_sales` fact with date, product, customer and store dimensions), draw a first version, state the assumptions in one line, and invite corrections. Ask a question only when a wrong guess would waste the user's time, for example which of two real projects to read.
 2. List the nodes and edges. Decide how much layout the user cares about:
    - **No layout wishes:** leave `lane` and `row` out. The renderer puts each node one lane right of its inputs and keeps chains on one row (section 3a).
    - **Named stages, automatic rows:** give `lanes` and a `lane` on every node, and leave out `row`.
@@ -80,7 +79,7 @@ If PR Lens output is messy, do not keep tuning it. Its layout hints (`direction`
 
 A node without `lane` or `row` is placed by the renderer; a node that has them stays exactly there. Mix freely. The rules, so you can predict and correct the result:
 
-- **Lane:** one right of the furthest-right lane among its inputs. A source with no inputs sits just left of its first consumer, so no line crosses empty lanes. If `lanes` is absent they are created (`stage 1`, `stage 2`, ...). Give every node a `layer` such as `raw` or `marts` and the layers become the lanes, in flow order, with those names. If the nodes flow further right than the given `lanes`, extra lanes are added and the renderer says so.
+- **Lane:** one right of the furthest-right lane among its inputs. A source with no inputs sits just left of its first consumer, so no line crosses empty lanes. If `lanes` is absent they are created, unlabelled (a column of cards needs no name; give `layer` to name them). Give every node a `layer` such as `raw` or `marts` and the layers become the lanes, in flow order, with those names. If the nodes flow further right than the given `lanes`, extra lanes are added and the renderer says so.
 - **Row:** near the average row of its inputs, so a chain stays on one row; sources then line up with their consumers; a card is never put where a line from further left would run through it. Edges that point backwards (cycles) are ignored for placement and still drawn, with a warning.
 - **Pins win:** `"lane": "marts"` or `"row": 0` on a node is a direct instruction. Free nodes are placed around it, and two pinned nodes in one cell are rejected. For "put X on the top row" set `row: 0` on X (and on the nodes of its chain, to keep the line straight); for "move X to the aggregates stage" set `lane`.
 - **Freeze and edit:** `render_diagram.py spec.json out.svg --resolve resolved.json` also writes the spec with every automatic lane and row filled in. Render `resolved.json` and it looks identical, but now every node is pinned and a hand edit moves only that node.

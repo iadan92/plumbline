@@ -8,7 +8,7 @@ ends are computed from the message order, so the spec never states coordinates.
 """
 import copy
 
-from common import STATE_WORDS, build_theme, clean_path, esc, flatten, fonts, glyph, norm_state, packet, rounded
+from common import STATE_WORDS, attr, build_theme, clean_path, esc, flatten, fonts, glyph, norm_state, packet, rounded
 
 BAR_W = 12
 BAR_SHIFT = 5          # nested activations step right by this much
@@ -91,6 +91,7 @@ def render_sequence(spec, theme, animate, at_time, palette, warnings):
 
     # participant card widths, then column centres wide enough for every label that crosses a gap
     for p in parts:
+        p.setdefault("title", p["id"])
         p.setdefault("glyph", "service")
         p["state"] = norm_state(p.get("state")) or "unchanged"
         if p.get("icon"):
@@ -207,7 +208,7 @@ def render_sequence(spec, theme, animate, at_time, palette, warnings):
     s = []
     add = s.append
     add(f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {total_w} {total_h}" width="{total_w}" height="{total_h}" '
-        f'role="img" aria-label="{esc(title)}" font-family="{SANS_F}">')
+        f'role="img" aria-label="{attr(title)}" font-family="{SANS_F}">')
     add(f'<title>{esc(title)}</title>')
     defs = [f'<pattern id="dots" width="18" height="18" patternUnits="userSpaceOnUse"><circle cx="1.5" cy="1.5" r="1" fill="{T["dots"]}"/></pattern>']
     for st in sorted({p["m"]["st"] for p in paths} | {"unchanged"}):
